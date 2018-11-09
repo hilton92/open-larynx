@@ -52,30 +52,6 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     mRoot = new osg::Group;
     osg::Camera* camera = get_new_camera(this->width(), this->height(), this->devicePixelRatio());
     initialize_view_and_manipulator(camera);
-    unsigned int numberOfSpheres{10};
-    radiusMin = 0.2;
-    radiusMax = 1.0;
-    for (unsigned int i = 0; i < numberOfSpheres; i++)
-    {
-        double radius{get_random_number(0.2, 1.0)};
-        double mass{get_random_number(2, 10)};
-        double coefRest{get_random_number(0.2, 1.0)};
-        double xPos{get_random_number(-5 + radius, 5 - radius)};
-        double yPos{get_random_number(-5 + radius, 5 - radius)};
-        double zPos{get_random_number(-5 + radius, 5 - radius)};
-        double xVel{get_random_number(-6, 6)};
-        double yVel{get_random_number(-6, 6)};
-        double zVel{get_random_number(-6, 6)};
-        double redColor{get_random_number(0, 1)};
-        double greenColor{get_random_number(0, 1)};
-        double blueColor{get_random_number(0, 1)};
-        create_sphere(i, radius, mass, coefRest, xPos, yPos, zPos, xVel, yVel, zVel, osg::Vec4(redColor, greenColor, blueColor, 1.0f));
-    }
-    float redColor{0.5f};
-    float greenColor{0.5f};
-    float blueColor{0.5f};
-    float opaqueValue{1.f};
-    mRoot->addChild(insert_box_into_visualization(osg::Vec4(redColor, greenColor, blueColor, opaqueValue), osg::Vec3d(1, 1, 1)));
     this->setFocusPolicy(Qt::StrongFocus);
     this->setMinimumSize(100, 100);
     this->setMouseTracking(true);
@@ -98,14 +74,6 @@ void OSGWidget::timerEvent(QTimerEvent *)
     {
         update();
     }
-}
-
-double OSGWidget::get_random_number(double lowerLimit, double upperLimit)
-{
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(lowerLimit, upperLimit);
-    return dis(gen);
 }
 
 osg::Camera* OSGWidget::get_new_camera(const int width, const int height, int pixelRatio)
@@ -148,24 +116,6 @@ void OSGWidget::initialize_mviewer(osgViewer::View *newView, osg::ref_ptr<osgGA:
     mView->home();
 }
 
-void OSGWidget::create_sphere(unsigned int index, double radius, double mass, double coefRest, double xPos, double yPos, double zPos, double xVel, double yVel, double zVel, osg::Vec4 colorV)
-{
-    double boxLimit{5};
-    radius = get_random_number(radiusMin, radiusMax);
-    xPos = get_random_number((-boxLimit + radius), (boxLimit - radius));
-    yPos = get_random_number((-boxLimit + radius), (boxLimit - radius));
-    zPos = get_random_number((-boxLimit + radius), (boxLimit - radius));
-    osg::Sphere* sphere = new osg::Sphere(osg::Vec3(0, 0, 0), radius);
-    osg::ShapeDrawable *sd = new osg::ShapeDrawable(sphere);
-    color_sphere(sd, colorV);
-    sd->setName("Sphere");
-    create_geode(sd, index, radius, mass, coefRest, xPos, yPos, zPos, xVel, yVel, zVel);
-}
-
-void OSGWidget::color_sphere(osg::ShapeDrawable *sd, osg::Vec4 colorVect)
-{
-    sd->setColor(colorVect);
-}
 
 void OSGWidget::create_geode(osg::ShapeDrawable *sd, unsigned int index, double radius, double mass, double coefRest, double xPos, double yPos, double zPos, double xVel, double yVel, double zVel)
 {
@@ -183,49 +133,6 @@ void OSGWidget::create_geode(osg::ShapeDrawable *sd, unsigned int index, double 
     mRoot->addChild(transform);
 }
 
-
-
-osg::Geometry* OSGWidget::create_wireframe_box_geometry_centered_at_origin(float sideLength)
-{
-    osg::Vec3Array* v = new osg::Vec3Array;
-    v->resize(8);
-    float lim = sideLength/2.f;
-    (*v)[0].set(lim, lim, lim);
-    (*v)[1].set(lim, -lim, lim);
-    (*v)[2].set(-lim, lim, lim);
-    (*v)[3].set(-lim, -lim, lim);
-    (*v)[4].set(lim, lim, -lim);
-    (*v)[5].set(lim, -lim, -lim);
-    (*v)[6].set(-lim, lim, -lim);
-    (*v)[7].set(-lim, -lim, -lim);
-    osg::Geometry* geom = new osg::Geometry;
-    geom->setUseDisplayList(false);
-    geom->setVertexArray(v);
-    GLushort idxLines[8] = {0, 4, 1, 5, 2, 6, 3, 7};
-    GLushort idxLoops[4] = {0, 1, 3, 2};
-    GLushort idxLoops2[4] = {4, 5, 7, 6};
-    geom->addPrimitiveSet(new osg::DrawElementsUShort( osg::PrimitiveSet::LINES, 8, idxLines));
-    geom->addPrimitiveSet(new osg::DrawElementsUShort( osg::PrimitiveSet::LINE_LOOP, 4, idxLoops));
-    geom->addPrimitiveSet(new osg::DrawElementsUShort( osg::PrimitiveSet::LINE_LOOP, 4, idxLoops2));
-    return geom;
-}
-
-osg::Node* OSGWidget::insert_box_into_visualization(osg::Vec4 color, osg::Vec3d scaleFactor)
-{
-    float sideLength{10};
-    osg::Geometry* geom = create_wireframe_box_geometry_centered_at_origin(sideLength);
-    osg::Vec4Array* c = new osg::Vec4Array;
-    c->push_back(color);
-    geom->setColorArray(c, osg::Array::BIND_OVERALL);
-    osg::Geode* geode = new osg::Geode;
-    geode->addDrawable( geom );
-    geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
-    geode->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
-    osg::PositionAttitudeTransform* transform = new osg::PositionAttitudeTransform;
-    transform->setScale(scaleFactor);
-    transform->addChild(geode);
-    return transform;
-}
 
 void OSGWidget::paint_event(QPaintEvent*)
 {
