@@ -92,7 +92,7 @@ osg::Camera* OSGWidget::get_new_camera(const int width, const int height, int pi
     camera->setGraphicsContext(mGraphicsWindow);
     camera->setViewport(0, 0, width * pixelRatio, height * pixelRatio);
     float redColor{0.f};
-    float greenColor{0.f};
+    float greenColor{0.2f};
     float blueColor{0.5f};
     float opaqueValue{1.f};
     camera->setClearColor(osg::Vec4(redColor, greenColor, blueColor, opaqueValue));

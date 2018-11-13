@@ -7,22 +7,18 @@
 #include <osg/Node>
 #include <osg/Material>
 #include <osg/PositionAttitudeTransform>
-#include <iostream>
 
 
 osg::ref_ptr<osg::Node> create_scaled_model(osg::ref_ptr<osg::Node> model)
 {
-    osg::BoundingSphere bb = model->getBound();
-
+     osg::BoundingSphere bb = model->getBound();
      osg::ref_ptr<osg::PositionAttitudeTransform> scaleTrans = new osg::PositionAttitudeTransform;
      double boundingBoxRadius = bb.radius();
      double radiusRatio{1.0/boundingBoxRadius};
      scaleTrans->setScale(osg::Vec3d(radiusRatio,radiusRatio,radiusRatio));
      scaleTrans->addChild(model);
-
      return scaleTrans.release();
 }
-
 
 osg::ref_ptr<osg::Node> create_translated_model(osg::ref_ptr<osg::Node> model)
 {
@@ -34,7 +30,6 @@ osg::ref_ptr<osg::Node> create_translated_model(osg::ref_ptr<osg::Node> model)
     positionTrans->addChild(model);
     return positionTrans.release();
 }
-
 
 osg::ref_ptr<osg::Node> load_cartilage_model_file(unsigned int modelNum)
 {
