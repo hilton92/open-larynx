@@ -10,6 +10,8 @@
 #include <QKeyEvent>
 #include <QWheelEvent>
 #include <QPainter>
+#include "OSGLarynx.h"
+#include <iostream>
 
 
 class SphereUpdateCallback: public osg::NodeCallback
@@ -52,6 +54,12 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     mRoot = new osg::Group;
     osg::Camera* camera = get_new_camera(this->width(), this->height(), this->devicePixelRatio());
     initialize_view_and_manipulator(camera);
+    unsigned int numberRepresentingThyroid = 1;
+    unsigned int numberRepresentingCricoid = 2;
+    unsigned int numberRepresentingArytenoid = 3;
+    mRoot->addChild(create_cartilage(numberRepresentingThyroid));
+    mRoot->addChild(create_cartilage(numberRepresentingCricoid));
+    mRoot->addChild(create_cartilage(numberRepresentingArytenoid));
     this->setFocusPolicy(Qt::StrongFocus);
     this->setMinimumSize(100, 100);
     this->setMouseTracking(true);
@@ -60,6 +68,7 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     double timeStep{1.0/framesPerSecond};
     double timerDurationInMilliSeconds{timeStep * 1000};
     mTimerId = startTimer(timerDurationInMilliSeconds);
+
     running = false;
 }
 
@@ -83,7 +92,7 @@ osg::Camera* OSGWidget::get_new_camera(const int width, const int height, int pi
     camera->setGraphicsContext(mGraphicsWindow);
     camera->setViewport(0, 0, width * pixelRatio, height * pixelRatio);
     float redColor{0.f};
-    float greenColor{0.f};
+    float greenColor{0.2f};
     float blueColor{0.5f};
     float opaqueValue{1.f};
     camera->setClearColor(osg::Vec4(redColor, greenColor, blueColor, opaqueValue));

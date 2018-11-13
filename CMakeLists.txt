@@ -7,6 +7,7 @@ FIND_PACKAGE( OpenSceneGraph REQUIRED COMPONENTS osgDB osgGA osgUtil osgViewer o
 
 INCLUDE_DIRECTORIES( ${OPENSCENEGRAPH_INCLUDE_DIRS} )
 
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED 1)
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -21,6 +22,8 @@ SET(MYSOURCE
     mainwindowform.ui
     osgwidget.h
     osgwidget.cpp
+    OSGLarynx.cpp
+    OSGLarynx.h
     )
 
 add_executable(${PROJECT_NAME}
