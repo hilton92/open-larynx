@@ -1,4 +1,7 @@
 #include "osgwidget.h"
+#include "ArytenoidUpdateCallback.h"
+#include "ThyroidUpdateCallback.h"
+#include "CricoidUpdateCallback.h"
 
 #include <osg/Material>
 #include <osgViewer/ViewerEventHandlers>
@@ -14,33 +17,6 @@
 #include <iostream>
 
 
-class SphereUpdateCallback: public osg::NodeCallback
-{
-public:
-    SphereUpdateCallback(unsigned int index, bool &running):
-        progRunning{running}
-    {
-
-    }
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    {
-        if (progRunning)
-        {
-            double newDispX = 1.0;
-            double newDispY = 2.0;
-            double newDispZ = 3.0;
-            osg::Vec3d trans_position(newDispX, newDispY, newDispZ);
-            osg::PositionAttitudeTransform *pat = dynamic_cast<osg::PositionAttitudeTransform *> (node);
-            pat->setPosition(trans_position);
-            traverse(node, nv);
-        }
-    }
-
-protected:
-    double mTimeStep{1.0/30.0};
-    unsigned int objIndex;
-    bool& progRunning;
-};
 
 
 OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
@@ -48,8 +24,9 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     mGraphicsWindow{new osgViewer::GraphicsWindowEmbedded{this->x(),
                                                           this->y(),
                                                           this->width(),
-                                                          this->height() }}
-  , mViewer{new osgViewer::CompositeViewer}
+                                                          this->height()}},
+    mViewer{new osgViewer::CompositeViewer}
+
 {
     mRoot = new osg::Group;
     osg::Camera* camera = get_new_camera(this->width(), this->height(), this->devicePixelRatio());
@@ -57,6 +34,12 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     unsigned int numberRepresentingThyroid = 1;
     unsigned int numberRepresentingCricoid = 2;
     unsigned int numberRepresentingArytenoid = 3;
+    osg::ref_ptr<osg::Node> thyroid = create_cartilage(numberRepresentingThyroid);
+    osg::ref_ptr<osg::Node> cricoid = create_cartilage(numberRepresentingCricoid);
+    osg::ref_ptr<osg::Node> arytenoid = create_cartilage(numberRepresentingArytenoid);
+    thyroid->setUpdateCallback(new ThyroidUpdateCallback(running));
+    cricoid->setUpdateCallback(new CricoidUpdateCallback(running));
+    arytenoid->setUpdateCallback(new ArytenoidUpdateCallback(running));
     mRoot->addChild(create_cartilage(numberRepresentingThyroid));
     mRoot->addChild(create_cartilage(numberRepresentingCricoid));
     mRoot->addChild(create_cartilage(numberRepresentingArytenoid));
