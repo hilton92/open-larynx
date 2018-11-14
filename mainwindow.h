@@ -22,6 +22,9 @@ public:
 public slots:
     void on_actionExit_triggered();
 
+private slots:
+    void on_makeThyroidTransparent_clicked();
+
 private:
     Ui::MainWindowForm *mMainWindowUI;
     OSGWidget *mOSGWidget{nullptr};

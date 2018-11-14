@@ -34,13 +34,13 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     unsigned int numberRepresentingThyroid = 1;
     unsigned int numberRepresentingCricoid = 2;
     unsigned int numberRepresentingArytenoid = 3;
-    osg::ref_ptr<osg::Node> thyroid = create_cartilage(numberRepresentingThyroid);
+    Thyroid = create_cartilage(numberRepresentingThyroid);
     osg::ref_ptr<osg::Node> cricoid = create_cartilage(numberRepresentingCricoid);
     osg::ref_ptr<osg::Node> arytenoid = create_cartilage(numberRepresentingArytenoid);
-    thyroid->setUpdateCallback(new ThyroidUpdateCallback(running));
-    cricoid->setUpdateCallback(new CricoidUpdateCallback(running));
-    arytenoid->setUpdateCallback(new ArytenoidUpdateCallback(running));
-    mRoot->addChild(create_cartilage(numberRepresentingThyroid));
+    //Thyroid->setUpdateCallback(new ThyroidUpdateCallback(running));
+    //cricoid->setUpdateCallback(new CricoidUpdateCallback(running));
+    //arytenoid->setUpdateCallback(new ArytenoidUpdateCallback(running));
+    mRoot->addChild(Thyroid);
     mRoot->addChild(create_cartilage(numberRepresentingCricoid));
     mRoot->addChild(create_cartilage(numberRepresentingArytenoid));
     this->setFocusPolicy(Qt::StrongFocus);
@@ -52,7 +52,7 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     double timerDurationInMilliSeconds{timeStep * 1000};
     mTimerId = startTimer(timerDurationInMilliSeconds);
 
-    running = false;
+    running = true;
 }
 
 OSGWidget::~OSGWidget()
@@ -120,9 +120,22 @@ void OSGWidget::create_geode(osg::ShapeDrawable *sd, unsigned int index, double 
     stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
     osg::PositionAttitudeTransform *transform = new osg::PositionAttitudeTransform;
     transform->setPosition(osg::Vec3(xPos, yPos, zPos));
-    transform->setUpdateCallback(new SphereUpdateCallback(index, running));
+    //transform->setUpdateCallback(new SphereUpdateCallback(index, running));
     transform->addChild(geode);
     mRoot->addChild(transform);
+}
+
+void OSGWidget::makeThyroidTransparent()
+{
+    //osg::Vec4Array* color = new osg::Vec4Array;
+    //color->push_back(osg::Vec4(0.0f, 0.0f, 0.0f, 0.25f));
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.f, 1.f, 1.f, 0.1f));
+    mat->setTransparency(osg::Material::FRONT, 0.1f);
+
+    //Thyroid->asGeometry()->setColorArray(color);
+    Thyroid->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+    Thyroid->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
 }
 
 

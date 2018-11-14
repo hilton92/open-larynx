@@ -32,6 +32,9 @@ public:
   double get_random_number(double lowerLimit, double upperLimit);
   void get_new_values_for_spheres();
   bool running = false;
+  void makeThyroidTransparent();
+  void makeCricoidTransparent();
+  void makeArytenoidTransparent();
 
 protected:
   virtual void paint_event( QPaintEvent* paintEvent );
@@ -52,6 +55,7 @@ protected:
   void create_geode(osg::ShapeDrawable *sd, unsigned int index, double radius, double mass, double coefRest, double xPos, double Pos, double zPos, double xVel, double yVel, double zVel);
   void initialize_mviewer(osgViewer::View *newView, osg::ref_ptr<osgGA::TrackballManipulator> manipulator);
   void timerEvent(QTimerEvent *);
+
   osg::Camera* get_new_camera(const int width, const int height, int pixelRatio);
   osg::Node* insert_box_into_visualization(osg::Vec4 color, osg::Vec3d scaleFactor);
   osg::Geometry* create_wireframe_box_geometry_centered_at_origin(float sideLength);
@@ -66,6 +70,7 @@ private:
   osg::ref_ptr<osgViewer::View> mView;
   osg::ref_ptr<osg::Group> mRoot;
   int mTimerId{0};
+  osg::ref_ptr<osg::Node> Thyroid;
 
 };
 

@@ -57,6 +57,52 @@
    <addaction name="menuSettings"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QDockWidget" name="dockWidget">
+   <attribute name="dockWidgetArea">
+    <number>4</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <widget class="QPushButton" name="makeThyroidTransparent">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>10</y>
+       <width>89</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Thyroid</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="makeCricoidTransparent">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>50</y>
+       <width>89</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Cricoid</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="makeArytenoidTransparent">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>90</y>
+       <width>89</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Arytenoid</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>

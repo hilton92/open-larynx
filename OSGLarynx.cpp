@@ -57,6 +57,6 @@ osg::ref_ptr<osg::Node> create_cartilage(unsigned int modelNum)
     osg::ref_ptr<osg::Node> model = load_cartilage_model_file(modelNum);
     osg::ref_ptr<osg::Node> scaledModel = create_scaled_model(model);
     osg::ref_ptr<osg::Node> translatedModel = create_translated_model(scaledModel);
-    return model.release();
+    return model;
 }
 

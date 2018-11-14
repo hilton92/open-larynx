@@ -23,3 +23,8 @@ void MainWindow::on_actionExit_triggered()
 {
     QApplication::quit();
 }
+
+void MainWindow::on_makeThyroidTransparent_clicked()
+{
+    mOSGWidget->makeThyroidTransparent();
+}
