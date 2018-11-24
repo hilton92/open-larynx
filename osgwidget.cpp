@@ -8,6 +8,7 @@
 #include <osgGA/EventQueue>
 #include <osgViewer/ViewerEventHandlers>
 #include <osg/PositionAttitudeTransform>
+#include <osg/BlendFunc>
 #include <QPainter>
 #include <random>
 #include <QKeyEvent>
@@ -35,14 +36,15 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     unsigned int numberRepresentingCricoid = 2;
     unsigned int numberRepresentingArytenoid = 3;
     Thyroid = create_cartilage(numberRepresentingThyroid);
-    osg::ref_ptr<osg::Node> cricoid = create_cartilage(numberRepresentingCricoid);
-    osg::ref_ptr<osg::Node> arytenoid = create_cartilage(numberRepresentingArytenoid);
+    Cricoid = create_cartilage(numberRepresentingCricoid);
+    Arytenoid = create_cartilage(numberRepresentingArytenoid);
+    set_cartilage_colors();
     //Thyroid->setUpdateCallback(new ThyroidUpdateCallback(running));
-    //cricoid->setUpdateCallback(new CricoidUpdateCallback(running));
-    //arytenoid->setUpdateCallback(new ArytenoidUpdateCallback(running));
+    //Cricoid->setUpdateCallback(new CricoidUpdateCallback(running));
+    //Arytenoid->setUpdateCallback(new ArytenoidUpdateCallback(running));
     mRoot->addChild(Thyroid);
-    mRoot->addChild(create_cartilage(numberRepresentingCricoid));
-    mRoot->addChild(create_cartilage(numberRepresentingArytenoid));
+    mRoot->addChild(Arytenoid);
+    mRoot->addChild(Cricoid);
     this->setFocusPolicy(Qt::StrongFocus);
     this->setMinimumSize(100, 100);
     this->setMouseTracking(true);
@@ -51,7 +53,6 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     double timeStep{1.0/framesPerSecond};
     double timerDurationInMilliSeconds{timeStep * 1000};
     mTimerId = startTimer(timerDurationInMilliSeconds);
-
     running = true;
 }
 
@@ -66,6 +67,18 @@ void OSGWidget::timerEvent(QTimerEvent *)
     {
         update();
     }
+}
+
+void OSGWidget::set_cartilage_colors()
+{
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f, 0.875f, 0.74f, 1.0f));
+    Thyroid->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+    Thyroid->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
+    Cricoid->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+    Cricoid->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
+    Arytenoid->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+    Arytenoid->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
 }
 
 osg::Camera* OSGWidget::get_new_camera(const int width, const int height, int pixelRatio)
@@ -125,19 +138,30 @@ void OSGWidget::create_geode(osg::ShapeDrawable *sd, unsigned int index, double 
     mRoot->addChild(transform);
 }
 
-void OSGWidget::makeThyroidTransparent()
+void OSGWidget::make_cartilage_transparent(osg::ref_ptr<osg::Node> myNode)
 {
-    //osg::Vec4Array* color = new osg::Vec4Array;
-    //color->push_back(osg::Vec4(0.0f, 0.0f, 0.0f, 0.25f));
     osg::ref_ptr<osg::Material> mat = new osg::Material;
-    mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.f, 1.f, 1.f, 0.1f));
-    mat->setTransparency(osg::Material::FRONT, 0.1f);
-
-    //Thyroid->asGeometry()->setColorArray(color);
-    Thyroid->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
-    Thyroid->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
+    mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f, 0.875f, 0.74f, 1.0f));
+    mat->setTransparency(osg::Material::FRONT, 0.6f);
+    myNode->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+    myNode->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
+    osg::StateSet* set = myNode->getOrCreateStateSet();
+    set->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    set->setAttributeAndModes(new osg::BlendFunc(GL_SRC_ALPHA ,GL_ONE_MINUS_SRC_ALPHA), osg::StateAttribute::ON);
 }
 
+osg::ref_ptr<osg::Node> OSGWidget::get_thyroid_pointer()
+{
+    return Thyroid;
+}
+osg::ref_ptr<osg::Node> OSGWidget::get_cricoid_pointer()
+{
+    return Cricoid;
+}
+osg::ref_ptr<osg::Node> OSGWidget::get_arytenoid_pointer()
+{
+    return Arytenoid;
+}
 
 void OSGWidget::paint_event(QPaintEvent*)
 {

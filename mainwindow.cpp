@@ -26,5 +26,15 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_makeThyroidTransparent_clicked()
 {
-    mOSGWidget->makeThyroidTransparent();
+    mOSGWidget->make_cartilage_transparent(mOSGWidget->get_thyroid_pointer());
+}
+
+void MainWindow::on_makeCricoidTransparent_clicked()
+{
+    mOSGWidget->make_cartilage_transparent(mOSGWidget->get_cricoid_pointer());
+}
+
+void MainWindow::on_makeArytenoidTransparent_clicked()
+{
+    mOSGWidget->make_cartilage_transparent(mOSGWidget->get_arytenoid_pointer());
 }

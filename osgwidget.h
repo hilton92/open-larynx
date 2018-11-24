@@ -32,9 +32,12 @@ public:
   double get_random_number(double lowerLimit, double upperLimit);
   void get_new_values_for_spheres();
   bool running = false;
-  void makeThyroidTransparent();
-  void makeCricoidTransparent();
-  void makeArytenoidTransparent();
+  void make_cartilage_transparent(osg::ref_ptr<osg::Node>);
+  osg::ref_ptr<osg::Node> get_thyroid_pointer();
+  osg::ref_ptr<osg::Node> get_cricoid_pointer();
+  osg::ref_ptr<osg::Node> get_arytenoid_pointer();
+
+
 
 protected:
   virtual void paint_event( QPaintEvent* paintEvent );
@@ -63,7 +66,7 @@ protected:
 
 private:
   virtual void on_resize( int width, int height );
-
+  void set_cartilage_colors();
   osgGA::EventQueue* get_event_queue() const;
   osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> mGraphicsWindow;
   osg::ref_ptr<osgViewer::CompositeViewer> mViewer;
@@ -71,6 +74,8 @@ private:
   osg::ref_ptr<osg::Group> mRoot;
   int mTimerId{0};
   osg::ref_ptr<osg::Node> Thyroid;
+  osg::ref_ptr<osg::Node> Cricoid;
+  osg::ref_ptr<osg::Node> Arytenoid;
 
 };
 
