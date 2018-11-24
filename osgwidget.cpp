@@ -52,7 +52,6 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     double timeStep{1.0/framesPerSecond};
     double timerDurationInMilliSeconds{timeStep * 1000};
     mTimerId = startTimer(timerDurationInMilliSeconds);
-
     running = false;
 
 }
@@ -123,26 +122,9 @@ void OSGWidget::initialize_mviewer(osgViewer::View *newView, osg::ref_ptr<osgGA:
 }
 
 
-void OSGWidget::create_geode(osg::ShapeDrawable *sd, unsigned int index, double radius, double mass, double coefRest, double xPos, double yPos, double zPos, double xVel, double yVel, double zVel)
-{
-    osg::Geode *geode = new osg::Geode;
-    geode->addDrawable(sd);
-    osg::StateSet *stateSet = geode->getOrCreateStateSet();
-    osg::Material *material = new osg::Material;
-    material->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
-    stateSet->setAttributeAndModes(material, osg::StateAttribute::ON);
-    stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
-    osg::PositionAttitudeTransform *transform = new osg::PositionAttitudeTransform;
-    transform->setPosition(osg::Vec3(xPos, yPos, zPos));
-    //transform->setUpdateCallback(new SphereUpdateCallback(index, running));
-    transform->addChild(geode);
-    mRoot->addChild(transform);
-}
-
 void OSGWidget::make_cartilage_transparent(osg::ref_ptr<osg::Node> myNode)
 {
     osg::ref_ptr<osg::Material> mat = new osg::Material;
-    mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f, 0.875f, 0.74f, 1.0f));
     mat->setTransparency(osg::Material::FRONT, 0.6f);
     myNode->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
     myNode->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);

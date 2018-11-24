@@ -26,8 +26,6 @@ public:
   osg::ref_ptr<osg::Node> get_cricoid_pointer();
   osg::ref_ptr<osg::Node> get_arytenoid_pointer();
 
-
-
 protected:
   virtual void paint_event( QPaintEvent* paintEvent );
   virtual void paintGL();
@@ -42,7 +40,6 @@ protected:
 
   void repaint_osg_graphics_after_interaction(QEvent* event);
   void initialize_view_and_manipulator(osg::Camera* camera);
-  void create_geode(osg::ShapeDrawable *sd, unsigned int index, double radius, double mass, double coefRest, double xPos, double Pos, double zPos, double xVel, double yVel, double zVel);
   void initialize_mviewer(osgViewer::View *newView, osg::ref_ptr<osgGA::TrackballManipulator> manipulator);
   void timerEvent(QTimerEvent *);
 

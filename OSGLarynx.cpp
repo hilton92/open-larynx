@@ -4,6 +4,7 @@
 
 #include "OSGLarynx.h"
 #include <osgDB/ReadFile>
+#include <osgDB/Registry>
 #include <osg/Node>
 #include <osg/Material>
 #include <osg/PositionAttitudeTransform>
@@ -36,11 +37,11 @@ osg::ref_ptr<osg::Node> load_cartilage_model_file(unsigned int modelNum)
     osg::ref_ptr<osg::Node> model = nullptr;
     switch (modelNum)
     {
-        case 1: model = osgDB::readNodeFile("/home/benjamin/ME570/final-project-hilton92/thyroid.stl");
+        case 1: model = osgDB::readNodeFile("thyroid.stl");
             break;
-        case 2: model = osgDB::readNodeFile("/home/benjamin/ME570/final-project-hilton92/cricoid.stl");
+        case 2: model = osgDB::readNodeFile("cricoid.stl");
             break;
-        case 3: model = osgDB::readNodeFile("/home/benjamin/ME570/final-project-hilton92/arytenoid.stl");
+        case 3: model = osgDB::readNodeFile("arytenoid.stl");
             break;
     }
     if(model.valid())
