@@ -2,6 +2,7 @@
 #include "ArytenoidUpdateCallback.h"
 #include "ThyroidUpdateCallback.h"
 #include "CricoidUpdateCallback.h"
+#include "OSGLarynx.h"
 
 #include <osg/Material>
 #include <osgViewer/ViewerEventHandlers>
@@ -43,7 +44,6 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     mRoot->addChild(Thyroid);
     mRoot->addChild(Arytenoid);
     mRoot->addChild(Cricoid);
-    change_opacity_cartilages
     this->setFocusPolicy(Qt::StrongFocus);
     this->setMinimumSize(100, 100);
     this->setMouseTracking(true);

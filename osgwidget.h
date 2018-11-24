@@ -20,17 +20,6 @@ public:
              Qt::WindowFlags f = nullptr);
 
   virtual ~OSGWidget();
-  double radiusMin = 0.2;
-  double radiusMax = 0.6;
-  double massMin = 2;
-  double massMax = 10;
-  double coefRestMin = 0.2;
-  double coefRestMax = 1.0;
-  double velocityMin = -6;
-  double velocityMax = 6;
-  unsigned int numSpheres = 10;
-  double get_random_number(double lowerLimit, double upperLimit);
-  void get_new_values_for_spheres();
   bool running = false;
   void make_cartilage_transparent(osg::ref_ptr<osg::Node>);
   osg::ref_ptr<osg::Node> get_thyroid_pointer();
@@ -53,15 +42,11 @@ protected:
 
   void repaint_osg_graphics_after_interaction(QEvent* event);
   void initialize_view_and_manipulator(osg::Camera* camera);
-  void create_sphere(unsigned int index, double radius, double mass, double coefRest, double xPos, double yPos, double zPos, double xVel, double yVel, double zVel, osg::Vec4 colorV);
-  void color_sphere(osg::ShapeDrawable *sd, osg::Vec4 colorVect);
   void create_geode(osg::ShapeDrawable *sd, unsigned int index, double radius, double mass, double coefRest, double xPos, double Pos, double zPos, double xVel, double yVel, double zVel);
   void initialize_mviewer(osgViewer::View *newView, osg::ref_ptr<osgGA::TrackballManipulator> manipulator);
   void timerEvent(QTimerEvent *);
 
   osg::Camera* get_new_camera(const int width, const int height, int pixelRatio);
-  osg::Node* insert_box_into_visualization(osg::Vec4 color, osg::Vec3d scaleFactor);
-  osg::Geometry* create_wireframe_box_geometry_centered_at_origin(float sideLength);
 
 
 private:
