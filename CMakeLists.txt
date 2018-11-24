@@ -21,6 +21,11 @@ SET(MYSOURCE
     mainwindowform.ui
     osgwidget.h
     osgwidget.cpp
+    OSGLarynx.cpp
+    OSGLarynx.h
+    ThyroidUpdateCallback.h
+    ArytenoidUpdateCallback.h
+    CricoidUpdateCallback.h
     )
 
 add_executable(${PROJECT_NAME}

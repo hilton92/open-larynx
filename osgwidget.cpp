@@ -1,10 +1,14 @@
 #include "osgwidget.h"
+#include "ArytenoidUpdateCallback.h"
+#include "ThyroidUpdateCallback.h"
+#include "CricoidUpdateCallback.h"
 
 #include <osg/Material>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgGA/EventQueue>
 #include <osgViewer/ViewerEventHandlers>
 #include <osg/PositionAttitudeTransform>
+#include <osg/BlendFunc>
 #include <QPainter>
 #include <random>
 #include <QKeyEvent>
@@ -12,33 +16,6 @@
 #include <QPainter>
 
 
-class SphereUpdateCallback: public osg::NodeCallback
-{
-public:
-    SphereUpdateCallback(unsigned int index, bool &running):
-        progRunning{running}
-    {
-
-    }
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    {
-        if (progRunning)
-        {
-            double newDispX = 1.0;
-            double newDispY = 2.0;
-            double newDispZ = 3.0;
-            osg::Vec3d trans_position(newDispX, newDispY, newDispZ);
-            osg::PositionAttitudeTransform *pat = dynamic_cast<osg::PositionAttitudeTransform *> (node);
-            pat->setPosition(trans_position);
-            traverse(node, nv);
-        }
-    }
-
-protected:
-    double mTimeStep{1.0/30.0};
-    unsigned int objIndex;
-    bool& progRunning;
-};
 
 
 OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
@@ -46,12 +23,27 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     mGraphicsWindow{new osgViewer::GraphicsWindowEmbedded{this->x(),
                                                           this->y(),
                                                           this->width(),
-                                                          this->height() }}
-  , mViewer{new osgViewer::CompositeViewer}
+                                                          this->height()}},
+    mViewer{new osgViewer::CompositeViewer}
+
 {
     mRoot = new osg::Group;
     osg::Camera* camera = get_new_camera(this->width(), this->height(), this->devicePixelRatio());
     initialize_view_and_manipulator(camera);
+    unsigned int numberRepresentingThyroid = 1;
+    unsigned int numberRepresentingCricoid = 2;
+    unsigned int numberRepresentingArytenoid = 3;
+    Thyroid = create_cartilage(numberRepresentingThyroid);
+    Cricoid = create_cartilage(numberRepresentingCricoid);
+    Arytenoid = create_cartilage(numberRepresentingArytenoid);
+    set_cartilage_colors();
+    //Thyroid->setUpdateCallback(new ThyroidUpdateCallback(running));
+    //Cricoid->setUpdateCallback(new CricoidUpdateCallback(running));
+    //Arytenoid->setUpdateCallback(new ArytenoidUpdateCallback(running));
+    mRoot->addChild(Thyroid);
+    mRoot->addChild(Arytenoid);
+    mRoot->addChild(Cricoid);
+    change_opacity_cartilages
     this->setFocusPolicy(Qt::StrongFocus);
     this->setMinimumSize(100, 100);
     this->setMouseTracking(true);
@@ -60,7 +52,9 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     double timeStep{1.0/framesPerSecond};
     double timerDurationInMilliSeconds{timeStep * 1000};
     mTimerId = startTimer(timerDurationInMilliSeconds);
+
     running = false;
+
 }
 
 OSGWidget::~OSGWidget()
@@ -74,6 +68,18 @@ void OSGWidget::timerEvent(QTimerEvent *)
     {
         update();
     }
+}
+
+void OSGWidget::set_cartilage_colors()
+{
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f, 0.875f, 0.74f, 1.0f));
+    Thyroid->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+    Thyroid->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
+    Cricoid->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+    Cricoid->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
+    Arytenoid->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+    Arytenoid->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
 }
 
 osg::Camera* OSGWidget::get_new_camera(const int width, const int height, int pixelRatio)
@@ -128,11 +134,35 @@ void OSGWidget::create_geode(osg::ShapeDrawable *sd, unsigned int index, double 
     stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
     osg::PositionAttitudeTransform *transform = new osg::PositionAttitudeTransform;
     transform->setPosition(osg::Vec3(xPos, yPos, zPos));
-    transform->setUpdateCallback(new SphereUpdateCallback(index, running));
+    //transform->setUpdateCallback(new SphereUpdateCallback(index, running));
     transform->addChild(geode);
     mRoot->addChild(transform);
 }
 
+void OSGWidget::make_cartilage_transparent(osg::ref_ptr<osg::Node> myNode)
+{
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f, 0.875f, 0.74f, 1.0f));
+    mat->setTransparency(osg::Material::FRONT, 0.6f);
+    myNode->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+    myNode->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
+    osg::StateSet* set = myNode->getOrCreateStateSet();
+    set->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    set->setAttributeAndModes(new osg::BlendFunc(GL_SRC_ALPHA ,GL_ONE_MINUS_SRC_ALPHA), osg::StateAttribute::ON);
+}
+
+osg::ref_ptr<osg::Node> OSGWidget::get_thyroid_pointer()
+{
+    return Thyroid;
+}
+osg::ref_ptr<osg::Node> OSGWidget::get_cricoid_pointer()
+{
+    return Cricoid;
+}
+osg::ref_ptr<osg::Node> OSGWidget::get_arytenoid_pointer()
+{
+    return Arytenoid;
+}
 
 void OSGWidget::paint_event(QPaintEvent*)
 {
