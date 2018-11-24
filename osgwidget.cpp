@@ -52,7 +52,7 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     double timeStep{1.0/framesPerSecond};
     double timerDurationInMilliSeconds{timeStep * 1000};
     mTimerId = startTimer(timerDurationInMilliSeconds);
-    running = false;
+    running = true;
 
 }
 
@@ -130,6 +130,18 @@ void OSGWidget::make_cartilage_transparent(osg::ref_ptr<osg::Node> myNode)
     myNode->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
     osg::StateSet* set = myNode->getOrCreateStateSet();
     set->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    set->setAttributeAndModes(new osg::BlendFunc(GL_SRC_ALPHA ,GL_ONE_MINUS_SRC_ALPHA), osg::StateAttribute::ON);
+}
+
+void OSGWidget::make_cartilage_opaque(osg::ref_ptr<osg::Node> myNode)
+{
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f, 0.875f, 0.74f, 1.0f));
+    mat->setTransparency(osg::Material::FRONT, 0.f);
+    myNode->getStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+    myNode->getStateSet()->setAttributeAndModes(mat, osg::StateAttribute::OVERRIDE);
+    osg::StateSet* set = myNode->getOrCreateStateSet();
+    set->setRenderingHint(osg::StateSet::OPAQUE_BIN);
     set->setAttributeAndModes(new osg::BlendFunc(GL_SRC_ALPHA ,GL_ONE_MINUS_SRC_ALPHA), osg::StateAttribute::ON);
 }
 

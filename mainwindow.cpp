@@ -24,17 +24,38 @@ void MainWindow::on_actionExit_triggered()
     QApplication::quit();
 }
 
-void MainWindow::on_makeThyroidTransparent_clicked()
+void MainWindow::on_thyroidTransparency_toggled(bool checked)
 {
-    mOSGWidget->make_cartilage_transparent(mOSGWidget->get_thyroid_pointer());
+    if (checked)
+    {
+        mOSGWidget->make_cartilage_transparent(mOSGWidget->get_thyroid_pointer());
+    }
+    else
+    {
+        mOSGWidget->make_cartilage_opaque(mOSGWidget->get_thyroid_pointer());
+    }
 }
 
-void MainWindow::on_makeCricoidTransparent_clicked()
+void MainWindow::on_cricoidTransparency_toggled(bool checked)
 {
-    mOSGWidget->make_cartilage_transparent(mOSGWidget->get_cricoid_pointer());
+    if (checked)
+    {
+        mOSGWidget->make_cartilage_transparent(mOSGWidget->get_cricoid_pointer());
+    }
+    else
+    {
+        mOSGWidget->make_cartilage_opaque(mOSGWidget->get_cricoid_pointer());
+    }
 }
 
-void MainWindow::on_makeArytenoidTransparent_clicked()
+void MainWindow::on_arytenoidTransparency_toggled(bool checked)
 {
-    mOSGWidget->make_cartilage_transparent(mOSGWidget->get_arytenoid_pointer());
+    if (checked)
+    {
+        mOSGWidget->make_cartilage_transparent(mOSGWidget->get_arytenoid_pointer());
+    }
+    else
+    {
+        mOSGWidget->make_cartilage_opaque(mOSGWidget->get_arytenoid_pointer());
+    }
 }
