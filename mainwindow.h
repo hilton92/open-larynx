@@ -23,13 +23,13 @@ public slots:
     void on_actionExit_triggered();
 
 private slots:
-    void on_arytenoidTransparency_toggled(bool checked);
+    void on_toggleCricoid_clicked();
 
 private slots:
-    void on_cricoidTransparency_toggled(bool checked);
+    void on_toggleArytenoid_clicked();
 
 private slots:
-    void on_thyroidTransparency_toggled(bool checked);
+    void on_toggleThyroid_clicked();
 
 private:
     Ui::MainWindowForm *mMainWindowUI;

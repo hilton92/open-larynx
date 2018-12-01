@@ -24,38 +24,47 @@ void MainWindow::on_actionExit_triggered()
     QApplication::quit();
 }
 
-void MainWindow::on_thyroidTransparency_toggled(bool checked)
+void MainWindow::on_toggleThyroid_clicked()
 {
-    if (checked)
+    if (!mOSGWidget->thyroidTransparent)
     {
         mOSGWidget->make_cartilage_transparent(mOSGWidget->get_thyroid_pointer());
+        mOSGWidget->thyroidTransparent = true;
     }
     else
     {
         mOSGWidget->make_cartilage_opaque(mOSGWidget->get_thyroid_pointer());
+        mOSGWidget->thyroidTransparent = false;
+
     }
 }
 
-void MainWindow::on_cricoidTransparency_toggled(bool checked)
+void MainWindow::on_toggleArytenoid_clicked()
 {
-    if (checked)
-    {
-        mOSGWidget->make_cartilage_transparent(mOSGWidget->get_cricoid_pointer());
-    }
-    else
-    {
-        mOSGWidget->make_cartilage_opaque(mOSGWidget->get_cricoid_pointer());
-    }
-}
-
-void MainWindow::on_arytenoidTransparency_toggled(bool checked)
-{
-    if (checked)
+    if (!mOSGWidget->arytenoidTransparent)
     {
         mOSGWidget->make_cartilage_transparent(mOSGWidget->get_arytenoid_pointer());
+        mOSGWidget->arytenoidTransparent = true;
     }
     else
     {
         mOSGWidget->make_cartilage_opaque(mOSGWidget->get_arytenoid_pointer());
+        mOSGWidget->arytenoidTransparent = false;
+
+    }
+}
+
+void MainWindow::on_toggleCricoid_clicked()
+{
+    if (!mOSGWidget->cricoidTransparent)
+    {
+        mOSGWidget->make_cartilage_transparent(mOSGWidget->get_cricoid_pointer());
+        mOSGWidget->cricoidTransparent = true;
+    }
+    else
+    {
+        mOSGWidget->make_cartilage_opaque(mOSGWidget->get_cricoid_pointer());
+        mOSGWidget->cricoidTransparent = false;
+
     }
 }

@@ -62,43 +62,43 @@
     <number>4</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
-    <widget class="QRadioButton" name="thyroidTransparency">
+    <widget class="QPushButton" name="toggleThyroid">
      <property name="geometry">
       <rect>
-       <x>510</x>
+       <x>208</x>
        <y>10</y>
-       <width>181</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Thyroid Transparency</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="cricoidTransparency">
-     <property name="geometry">
-      <rect>
-       <x>510</x>
-       <y>40</y>
        <width>171</width>
-       <height>23</height>
+       <height>25</height>
       </rect>
      </property>
      <property name="text">
-      <string>Cricoid Transparency</string>
+      <string>Toggle Thyroid Visibility</string>
      </property>
     </widget>
-    <widget class="QRadioButton" name="arytenoidTransparency">
+    <widget class="QPushButton" name="toggleArytenoid">
      <property name="geometry">
       <rect>
-       <x>510</x>
-       <y>70</y>
+       <x>210</x>
+       <y>50</y>
        <width>191</width>
-       <height>23</height>
+       <height>25</height>
       </rect>
      </property>
      <property name="text">
-      <string>Arytenoid Transparency</string>
+      <string>Toggle Arytenoid Visibility</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="toggleCricoid">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>90</y>
+       <width>171</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Toggle Cricoid Visibility</string>
      </property>
     </widget>
    </widget>
