@@ -22,9 +22,13 @@ public:
   virtual ~OSGWidget();
   bool running = false;
   void make_cartilage_transparent(osg::ref_ptr<osg::Node>);
+  void make_cartilage_opaque(osg::ref_ptr<osg::Node>);
   osg::ref_ptr<osg::Node> get_thyroid_pointer();
   osg::ref_ptr<osg::Node> get_cricoid_pointer();
   osg::ref_ptr<osg::Node> get_arytenoid_pointer();
+  bool thyroidTransparent = false;
+  bool cricoidTransparent = false;
+  bool arytenoidTransparent = false;
 
 protected:
   virtual void paint_event( QPaintEvent* paintEvent );
