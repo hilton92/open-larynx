@@ -50,7 +50,14 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     cricoidTransform->addChild(thyroidTransform);
     cricoidTransform->addChild(arytenoidTransform);
     mRoot->addChild(cricoidTransform);
-    cricoidTransform->setAttitude(osg::Quat(osg::DegreesToRadians(90.0), osg::Vec3(1,0,0)));
+    mRoot->addChild(insert_geom_into_visualization(create_wireframe_box(10.f), osg::Vec4(0.f, 0.7f, 0.7f, 1.f)));
+    osg::Quat xRot, zRot;
+    xRot.makeRotate(osg::PI_2, osg::X_AXIS);
+    zRot.makeRotate(osg::DegreesToRadians(-20.0), osg::Z_AXIS);
+    osg::Quat fullRot = xRot * zRot;
+    cricoidTransform->setAttitude(fullRot);
+    cricoidTransform->setPosition(osg::Vec3(2.f, 2.f, -1.f));
+    mRoot->addChild(insert_geom_into_visualization(create_axis(osg::Vec3(-1.f, -4.f, 1.f), osg::Vec3(-1.f, 4.f, 1.f)), osg::Vec4(0.f, 0.7f, 0.7f, 1.f)));
     this->setFocusPolicy(Qt::StrongFocus);
     this->setMinimumSize(100, 100);
     this->setMouseTracking(true);
@@ -104,6 +111,60 @@ osg::Camera* OSGWidget::get_new_camera(const int width, const int height, int pi
     double zFar{1000};
     camera->setProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
     return camera;
+}
+
+osg::Geometry*  OSGWidget::create_axis(osg::Vec3 point, osg::Vec3 point2)
+{
+    osg::Geometry* axis = new osg::Geometry;
+    osg::ref_ptr<osg::Vec3Array> points = new osg::Vec3Array;
+    points->push_back(point);
+    points->push_back(point2);
+    osg::ref_ptr<osg::Vec4Array> color = new osg::Vec4Array;
+    color->push_back(osg::Vec4(1.f, 0.f, 0.f, 1.f));
+    axis->setColorArray(color);
+    axis->setVertexArray(points);
+    axis->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
+    axis->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, 2));
+    return axis;
+}
+
+osg::Geometry* OSGWidget::create_wireframe_box(float sideLength)
+{
+    osg::Vec3Array* v = new osg::Vec3Array;
+    v->resize(8);
+    float lim = sideLength/2.f;
+    (*v)[0].set(lim, lim, lim);
+    (*v)[1].set(lim, -lim, lim);
+    (*v)[2].set(-lim, lim, lim);
+    (*v)[3].set(-lim, -lim, lim);
+    (*v)[4].set(lim, lim, -lim);
+    (*v)[5].set(lim, -lim, -lim);
+    (*v)[6].set(-lim, lim, -lim);
+    (*v)[7].set(-lim, -lim, -lim);
+    osg::Geometry* geom = new osg::Geometry;
+    geom->setUseDisplayList(false);
+    geom->setVertexArray(v);
+    GLushort idxLines[8] = {0, 4, 1, 5, 2, 6, 3, 7};
+    GLushort idxLoops[4] = {0, 1, 3, 2};
+    GLushort idxLoops2[4] = {4, 5, 7, 6};
+    geom->addPrimitiveSet(new osg::DrawElementsUShort( osg::PrimitiveSet::LINES, 8, idxLines));
+    geom->addPrimitiveSet(new osg::DrawElementsUShort( osg::PrimitiveSet::LINE_LOOP, 4, idxLoops));
+    geom->addPrimitiveSet(new osg::DrawElementsUShort( osg::PrimitiveSet::LINE_LOOP, 4, idxLoops2));
+    return geom;
+}
+
+osg::Node* OSGWidget::insert_geom_into_visualization(osg::Geometry* geom, osg::Vec4 color)
+{
+    osg::Vec4Array* c = new osg::Vec4Array;
+    c->push_back(color);
+    geom->setColorArray(c, osg::Array::BIND_OVERALL);
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable( geom );
+    geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
+    geode->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+    osg::PositionAttitudeTransform* transform = new osg::PositionAttitudeTransform;
+    transform->addChild(geode);
+    return transform;
 }
 
 void OSGWidget::initialize_view_and_manipulator(osg::Camera *camera)
