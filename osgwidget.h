@@ -64,6 +64,7 @@ private:
   osg::ref_ptr<osg::Node> Thyroid;
   osg::ref_ptr<osg::Node> Cricoid;
   osg::ref_ptr<osg::Node> Arytenoid;
+  osg::ref_ptr<osg::Node> Axis;
 
 };
 

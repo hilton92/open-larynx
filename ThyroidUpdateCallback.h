@@ -21,14 +21,17 @@ public:
                 mCount--;
 
             osg::PositionAttitudeTransform *pat = dynamic_cast<osg::PositionAttitudeTransform *> (node);
-            osg::Quat* rot;
-            rot->makeRotate(osg::DegreesToRadians(2.0), osg::Z_AXIS);
-            osg::Matrix mat1 = osg::Matrix::translate(osg::Vec3(1.f, 1.f, 0.f));
-            //osg::Matrix mat2 = osg::Matrix::se
+            //osg::Quat rot;
+            //osg::Quat fullRot;
+            //rot.makeRotate(0.02 * mCount, 1.368, 0, 3.75);
 
+            osg::Matrixd mat1 = osg::Matrixd::translate(osg::Vec3(2.f, 2.f, -1.f));
+            osg::Matrixd mat2 = osg::Matrixd::rotate(0.01 * mCount, osg::Vec3(1.368f, 0.f, 3.75f));
+            osg::Matrixd mat3 = osg::Matrixd::translate(osg::Vec3(-2.f, -2.f, 1.f ));
 
-
-            //pat->setAttitude(osg::Quat(osg::DegreesToRadians(-25.0), osg::Vec3(0,1,0)));
+            osg::Matrix mat4 = mat1 * mat2 * mat3;
+            pat->setAttitude(mat4.getRotate());
+            pat->setPosition(mat4.getTrans());
             traverse(node, nv);
 
             if(mCount == 50 || mCount == 0)
