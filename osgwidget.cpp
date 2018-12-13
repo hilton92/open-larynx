@@ -53,12 +53,12 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     cricoidTransform->addChild(axisTransform);
     mRoot->addChild(cricoidTransform);
     mRoot->addChild(insert_geom_into_visualization(create_wireframe_box(10.f), osg::Vec4(0.f, 0.7f, 0.7f, 1.f)));
-    //osg::Quat xRot, zRot;
-    //xRot.makeRotate(osg::PI_2, osg::X_AXIS);
-    //zRot.makeRotate(osg::DegreesToRadians(-20.0), osg::Z_AXIS);
-    //osg::Quat fullRot = xRot * zRot;
-    //cricoidTransform->setAttitude(fullRot);
-    //cricoidTransform->setPosition(osg::Vec3(2.f, 2.f, -1.f));
+    osg::Quat xRot, zRot;
+    xRot.makeRotate(osg::PI_2, osg::X_AXIS);
+    zRot.makeRotate(osg::DegreesToRadians(-20.0), osg::Z_AXIS);
+    osg::Quat fullRot = xRot * zRot;
+    cricoidTransform->setAttitude(fullRot);
+    cricoidTransform->setPosition(osg::Vec3(2.f, 2.f, -1.f));
     this->setFocusPolicy(Qt::StrongFocus);
     this->setMinimumSize(100, 100);
     this->setMouseTracking(true);

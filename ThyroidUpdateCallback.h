@@ -25,9 +25,9 @@ public:
             //osg::Quat fullRot;
             //rot.makeRotate(0.02 * mCount, 1.368, 0, 3.75);
 
-            osg::Matrixd mat1 = osg::Matrixd::translate(osg::Vec3(2.f, 2.f, -1.f));
+            osg::Matrixd mat1 = osg::Matrixd::translate(osg::Vec3(1.f, 1.f, -1.f));
             osg::Matrixd mat2 = osg::Matrixd::rotate(0.01 * mCount, osg::Vec3(1.368f, 0.f, 3.75f));
-            osg::Matrixd mat3 = osg::Matrixd::translate(osg::Vec3(-2.f, -2.f, 1.f ));
+            osg::Matrixd mat3 = osg::Matrixd::translate(osg::Vec3(-1.f, -1.f, 1.f ));
 
             osg::Matrix mat4 = mat1 * mat2 * mat3;
             pat->setAttitude(mat4.getRotate());
