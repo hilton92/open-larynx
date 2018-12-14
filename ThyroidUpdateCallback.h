@@ -15,18 +15,33 @@ public:
     {
         if (progRunning)
         {
-            double newDispX = 1.0;
-            double newDispY = 2.0;
-            double newDispZ = 3.0;
-            osg::Vec3d trans_position(newDispX, newDispY, newDispZ);
+            if(mUp)
+                mCount++;
+            else
+                mCount--;
+
             osg::PositionAttitudeTransform *pat = dynamic_cast<osg::PositionAttitudeTransform *> (node);
-            pat->setPosition(trans_position);
+            //osg::Quat rot;
+            //osg::Quat fullRot;
+            //rot.makeRotate(0.02 * mCount, 1.368, 0, 3.75);
+
+            osg::Matrixd mat1 = osg::Matrixd::translate(osg::Vec3(1.f, 1.f, -1.f));
+            osg::Matrixd mat2 = osg::Matrixd::rotate(0.01 * mCount, osg::Vec3(1.368f, 0.f, 3.75f));
+            osg::Matrixd mat3 = osg::Matrixd::translate(osg::Vec3(-1.f, -1.f, 1.f ));
+
+            osg::Matrix mat4 = mat1 * mat2 * mat3;
+            pat->setAttitude(mat4.getRotate());
+            pat->setPosition(mat4.getTrans());
             traverse(node, nv);
+
+            if(mCount == 50 || mCount == 0)
+                mUp = !mUp;
         }
     }
 
 protected:
     double mTimeStep{1.0/30.0};
-    unsigned int objIndex;
+    bool mUp{true};
+    unsigned int mCount{0};
     bool& progRunning;
 };

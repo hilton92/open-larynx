@@ -20,7 +20,7 @@ public:
             double newDispZ = 3.0;
             osg::Vec3d trans_position(newDispX, newDispY, newDispZ);
             osg::PositionAttitudeTransform *pat = dynamic_cast<osg::PositionAttitudeTransform *> (node);
-            pat->setPosition(trans_position);
+            //pat->setPosition(trans_position);
             traverse(node, nv);
         }
     }

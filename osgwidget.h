@@ -41,11 +41,13 @@ protected:
   virtual void mouseReleaseEvent( QMouseEvent* event );
   virtual void wheelEvent( QWheelEvent* event );
   virtual bool event( QEvent* event );
-
+  osg::Geometry* create_axis(osg::Vec3, osg::Vec3);
   void repaint_osg_graphics_after_interaction(QEvent* event);
   void initialize_view_and_manipulator(osg::Camera* camera);
   void initialize_mviewer(osgViewer::View *newView, osg::ref_ptr<osgGA::TrackballManipulator> manipulator);
   void timerEvent(QTimerEvent *);
+  osg::Node* insert_geom_into_visualization(osg::Geometry* geom, osg::Vec4 color);
+  osg::Geometry* create_wireframe_box(float sideLength);
 
   osg::Camera* get_new_camera(const int width, const int height, int pixelRatio);
 
@@ -62,6 +64,7 @@ private:
   osg::ref_ptr<osg::Node> Thyroid;
   osg::ref_ptr<osg::Node> Cricoid;
   osg::ref_ptr<osg::Node> Arytenoid;
+  osg::ref_ptr<osg::Node> Axis;
 
 };
 

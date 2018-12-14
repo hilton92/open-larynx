@@ -21,6 +21,8 @@ public:
 
 public slots:
     void on_actionExit_triggered();
+    void on_actionSaveOptions_triggered();
+
 
 private slots:
     void on_toggleCricoid_clicked();
@@ -33,7 +35,7 @@ private slots:
 
 private:
     Ui::MainWindowForm *mMainWindowUI;
-    OSGWidget *mOSGWidget{nullptr};
+   // OSGWidget *mOSGWidget{nullptr};
 };
 
 #endif // MAINWINDOW_H

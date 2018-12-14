@@ -2,6 +2,7 @@
 #include "ui_mainwindowform.h"
 #include "osgwidget.h"
 #include <stdlib.h>
+#include <QFileDialog>
 
 #include <QDockWidget>
 
@@ -10,8 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mMainWindowUI{new Ui::MainWindowForm}
 {
     mMainWindowUI->setupUi(this);
-    mOSGWidget = new OSGWidget{this};
-    this->setCentralWidget(mOSGWidget);
+   //mOSGWidget = new OSGWidget{this};
+   // this->setCentralWidget(mOSGWidget);
 }
 
 MainWindow::~MainWindow()
@@ -24,47 +25,52 @@ void MainWindow::on_actionExit_triggered()
     QApplication::quit();
 }
 
+void MainWindow::on_actionSaveOptions_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Save Options", "", "txt");
+}
+
 void MainWindow::on_toggleThyroid_clicked()
 {
-    if (!mOSGWidget->thyroidTransparent)
+    if (!mMainWindowUI->mOSGWidget->thyroidTransparent)
     {
-        mOSGWidget->make_cartilage_transparent(mOSGWidget->get_thyroid_pointer());
-        mOSGWidget->thyroidTransparent = true;
+        mMainWindowUI->mOSGWidget->make_cartilage_transparent(mMainWindowUI->mOSGWidget->get_thyroid_pointer());
+        mMainWindowUI->mOSGWidget->thyroidTransparent = true;
     }
     else
     {
-        mOSGWidget->make_cartilage_opaque(mOSGWidget->get_thyroid_pointer());
-        mOSGWidget->thyroidTransparent = false;
+        mMainWindowUI->mOSGWidget->make_cartilage_opaque(mMainWindowUI->mOSGWidget->get_thyroid_pointer());
+        mMainWindowUI->mOSGWidget->thyroidTransparent = false;
 
     }
 }
 
 void MainWindow::on_toggleArytenoid_clicked()
 {
-    if (!mOSGWidget->arytenoidTransparent)
+    if (!mMainWindowUI->mOSGWidget->arytenoidTransparent)
     {
-        mOSGWidget->make_cartilage_transparent(mOSGWidget->get_arytenoid_pointer());
-        mOSGWidget->arytenoidTransparent = true;
+        mMainWindowUI->mOSGWidget->make_cartilage_transparent(mMainWindowUI->mOSGWidget->get_arytenoid_pointer());
+        mMainWindowUI->mOSGWidget->arytenoidTransparent = true;
     }
     else
     {
-        mOSGWidget->make_cartilage_opaque(mOSGWidget->get_arytenoid_pointer());
-        mOSGWidget->arytenoidTransparent = false;
+        mMainWindowUI->mOSGWidget->make_cartilage_opaque(mMainWindowUI->mOSGWidget->get_arytenoid_pointer());
+        mMainWindowUI->mOSGWidget->arytenoidTransparent = false;
 
     }
 }
 
 void MainWindow::on_toggleCricoid_clicked()
 {
-    if (!mOSGWidget->cricoidTransparent)
+    if (!mMainWindowUI->mOSGWidget->cricoidTransparent)
     {
-        mOSGWidget->make_cartilage_transparent(mOSGWidget->get_cricoid_pointer());
-        mOSGWidget->cricoidTransparent = true;
+        mMainWindowUI->mOSGWidget->make_cartilage_transparent(mMainWindowUI->mOSGWidget->get_cricoid_pointer());
+        mMainWindowUI->mOSGWidget->cricoidTransparent = true;
     }
     else
     {
-        mOSGWidget->make_cartilage_opaque(mOSGWidget->get_cricoid_pointer());
-        mOSGWidget->cricoidTransparent = false;
+        mMainWindowUI->mOSGWidget->make_cartilage_opaque(mMainWindowUI->mOSGWidget->get_cricoid_pointer());
+        mMainWindowUI->mOSGWidget->cricoidTransparent = false;
 
     }
 }
