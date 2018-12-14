@@ -29,6 +29,9 @@ public:
   bool thyroidTransparent = false;
   bool cricoidTransparent = false;
   bool arytenoidTransparent = false;
+  osg::Vec3 transVector = osg::Vec3(2.f, 2.f, -1.f);
+  osg::Quat fullRot;
+
 
 protected:
   virtual void paint_event( QPaintEvent* paintEvent );
@@ -48,8 +51,8 @@ protected:
   void timerEvent(QTimerEvent *);
   osg::Node* insert_geom_into_visualization(osg::Geometry* geom, osg::Vec4 color);
   osg::Geometry* create_wireframe_box(float sideLength);
-
   osg::Camera* get_new_camera(const int width, const int height, int pixelRatio);
+
 
 
 private:
