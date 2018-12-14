@@ -16,6 +16,7 @@
 #include <QKeyEvent>
 #include <QWheelEvent>
 #include <QPainter>
+#include <fstream>
 
 
 OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
@@ -41,15 +42,16 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     osg::PositionAttitudeTransform *thyroidTransform = new osg::PositionAttitudeTransform;
     osg::PositionAttitudeTransform *arytenoidTransform = new osg::PositionAttitudeTransform;
     Axis = insert_geom_into_visualization(create_axis(osg::Vec3(0.f, 4.f, 0.f), osg::Vec3(0.f, -4.f, 0.f)), osg::Vec4(0.f, 0.7f, 0.7f, 1.f));
-    //Axis = insert_geom_into_visualization(create_axis(osg::Vec3(0.f, 4.f, 0.f), osg::Vec3(0.f, -4.f, 0.f)), osg::Vec4(0.f, 0.7f, 0.7f, 1.f));
     osg::PositionAttitudeTransform *axisTransform = new osg::PositionAttitudeTransform;
     axisTransform = new osg::PositionAttitudeTransform;
     axisTransform->addChild(Axis);
     axisTransform->setUpdateCallback(new AxisUpdateCallback(running, zLocation, xLocation));
     //arytenoidTransform->setUpdateCallback(new ArytenoidUpdateCallback(running));
     arytenoidTransform->addChild(Arytenoid);
+    arytenoidTransform->addChild(create_sphere(0.2f, -1.5f, 4.3f, 2.5f));
     thyroidTransform->setUpdateCallback(new ThyroidUpdateCallback(running, zLocation, xLocation));
     thyroidTransform->addChild(Thyroid);
+    thyroidTransform->addChild(create_sphere(0.2f, 1.5f, 4.1f, 1.55f));
     cricoidTransform->addChild(Cricoid);
     //cricoidTransform->addChild(thyroidTransform);
     mRoot->addChild(thyroidTransform);
@@ -133,6 +135,15 @@ osg::Geometry*  OSGWidget::create_axis(osg::Vec3 point, osg::Vec3 point2)
     return axis;
 }
 
+void OSGWidget::write_to_file(std::string filename)
+{
+    std::ofstream myfile;
+    myfile.open(filename);
+    myfile << "This is a test of the emergency broadcast system";
+    myfile.close();
+
+}
+
 osg::Geometry* OSGWidget::create_wireframe_box(float sideLength)
 {
     osg::Vec3Array* v = new osg::Vec3Array;
@@ -168,6 +179,23 @@ osg::Node* OSGWidget::insert_geom_into_visualization(osg::Geometry* geom, osg::V
     geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
     geode->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
     osg::PositionAttitudeTransform* transform = new osg::PositionAttitudeTransform;
+    transform->addChild(geode);
+    return transform;
+}
+
+osg::PositionAttitudeTransform* OSGWidget::create_sphere(float radius, float xVal, float yVal, float zVal)
+{
+    osg::Sphere* sphere = new osg::Sphere(osg::Vec3(0,0,0), radius);
+    osg::ShapeDrawable *sd = new osg::ShapeDrawable(sphere);
+    osg::Geode *geode = new osg::Geode;
+    geode->addDrawable(sd);
+    osg::StateSet *stateSet = geode->getOrCreateStateSet();
+    osg::Material *material = new osg::Material;
+    material->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
+    stateSet->setAttributeAndModes(material, osg::StateAttribute::ON);
+    stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+    osg::PositionAttitudeTransform *transform = new osg::PositionAttitudeTransform;
+    transform->setPosition(osg::Vec3(xVal, yVal, zVal));
     transform->addChild(geode);
     return transform;
 }

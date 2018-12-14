@@ -28,6 +28,8 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::on_actionSaveOptions_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this, "Save Options", "", "txt");
+    mMainWindowUI->mOSGWidget->write_to_file(fileName.toStdString());
+
 }
 
 void MainWindow::on_toggleThyroid_clicked()

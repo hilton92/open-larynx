@@ -10,6 +10,7 @@
 #include <osgText/Text>
 #include <osg/Camera>
 #include <osg/ShapeDrawable>
+#include <string>
 
 class OSGWidget : public QOpenGLWidget
 {
@@ -29,6 +30,7 @@ public:
   osg::ref_ptr<osg::Node> get_thyroid_pointer();
   osg::ref_ptr<osg::Node> get_cricoid_pointer();
   osg::ref_ptr<osg::Node> get_arytenoid_pointer();
+  void write_to_file(std::string filename);
   bool thyroidTransparent = false;
   bool cricoidTransparent = false;
   bool arytenoidTransparent = false;
@@ -54,6 +56,7 @@ protected:
   void timerEvent(QTimerEvent *);
   osg::Node* insert_geom_into_visualization(osg::Geometry* geom, osg::Vec4 color);
   osg::Geometry* create_wireframe_box(float sideLength);
+  osg::PositionAttitudeTransform*  create_sphere(float radius, float xVal, float yVal, float zVal);
   osg::Camera* get_new_camera(const int width, const int height, int pixelRatio);
 
 
