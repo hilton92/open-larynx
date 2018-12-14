@@ -21,6 +21,9 @@ public:
 
   virtual ~OSGWidget();
   bool running = false;
+  float xLocation = 0.f;
+  float zLocation = 0.f;
+  float range = 0.f;
   void make_cartilage_transparent(osg::ref_ptr<osg::Node>);
   void make_cartilage_opaque(osg::ref_ptr<osg::Node>);
   osg::ref_ptr<osg::Node> get_thyroid_pointer();

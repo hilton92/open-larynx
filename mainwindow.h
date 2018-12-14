@@ -33,6 +33,10 @@ private slots:
 private slots:
     void on_toggleThyroid_clicked();
 
+    void on_X_direction_slider_valueChanged(int value);
+
+    void on_Z_direction_slider_valueChanged(int value);
+
 private:
     Ui::MainWindowForm *mMainWindowUI;
    // OSGWidget *mOSGWidget{nullptr};

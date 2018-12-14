@@ -2,6 +2,7 @@
 #include "ArytenoidUpdateCallback.h"
 #include "ThyroidUpdateCallback.h"
 #include "CricoidUpdateCallback.h"
+#include "AxisUpdateCallback.h"
 #include "OSGLarynx.h"
 
 #include <osg/Material>
@@ -39,15 +40,15 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     osg::PositionAttitudeTransform *cricoidTransform = new osg::PositionAttitudeTransform;
     osg::PositionAttitudeTransform *thyroidTransform = new osg::PositionAttitudeTransform;
     osg::PositionAttitudeTransform *arytenoidTransform = new osg::PositionAttitudeTransform;
-    Axis = insert_geom_into_visualization(create_axis(osg::Vec3(-0.7f, 4.f, 1.f), osg::Vec3(-0.7f, -4.f, 1.f)), osg::Vec4(0.f, 0.7f, 0.7f, 1.f));
+    Axis = insert_geom_into_visualization(create_axis(osg::Vec3(0.f, 4.f, 0.f), osg::Vec3(0.f, -4.f, 0.f)), osg::Vec4(0.f, 0.7f, 0.7f, 1.f));
     //Axis = insert_geom_into_visualization(create_axis(osg::Vec3(0.f, 4.f, 0.f), osg::Vec3(0.f, -4.f, 0.f)), osg::Vec4(0.f, 0.7f, 0.7f, 1.f));
-
     osg::PositionAttitudeTransform *axisTransform = new osg::PositionAttitudeTransform;
+    axisTransform = new osg::PositionAttitudeTransform;
     axisTransform->addChild(Axis);
-    //axisTransform->setUpdateCallback(new AxisCallback(running));
+    axisTransform->setUpdateCallback(new AxisUpdateCallback(running, zLocation, xLocation));
     //arytenoidTransform->setUpdateCallback(new ArytenoidUpdateCallback(running));
     arytenoidTransform->addChild(Arytenoid);
-    thyroidTransform->setUpdateCallback(new ThyroidUpdateCallback(running));
+    thyroidTransform->setUpdateCallback(new ThyroidUpdateCallback(running, zLocation, xLocation));
     thyroidTransform->addChild(Thyroid);
     cricoidTransform->addChild(Cricoid);
     //cricoidTransform->addChild(thyroidTransform);

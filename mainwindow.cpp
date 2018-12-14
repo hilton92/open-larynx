@@ -74,3 +74,15 @@ void MainWindow::on_toggleCricoid_clicked()
 
     }
 }
+
+void MainWindow::on_X_direction_slider_valueChanged(int value)
+{
+    float val = (2.f * value) / 100;
+    mMainWindowUI->mOSGWidget->xLocation = -2.f + val;
+}
+
+void MainWindow::on_Z_direction_slider_valueChanged(int value)
+{
+    float val = (2.f * value) / 100;
+    mMainWindowUI->mOSGWidget->zLocation = val;
+}
