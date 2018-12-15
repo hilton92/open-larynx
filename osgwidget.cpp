@@ -2,8 +2,9 @@
 #include "ArytenoidUpdateCallback.h"
 #include "ThyroidUpdateCallback.h"
 #include "CricoidUpdateCallback.h"
+#include "AxisUpdateCallback.h"
 #include "OSGLarynx.h"
-
+#include "mainwindow.h"
 #include <osg/Material>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgGA/EventQueue>
@@ -15,6 +16,8 @@
 #include <QKeyEvent>
 #include <QWheelEvent>
 #include <QPainter>
+#include <fstream>
+#include <osg/io_utils>
 
 
 OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
@@ -29,36 +32,11 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     mRoot = new osg::Group;
     osg::Camera* camera = get_new_camera(this->width(), this->height(), this->devicePixelRatio());
     initialize_view_and_manipulator(camera);
-    unsigned int numberRepresentingThyroid = 1;
-    unsigned int numberRepresentingCricoid = 2;
-    unsigned int numberRepresentingArytenoid = 3;
-    Thyroid = create_cartilage(numberRepresentingThyroid);
-    Cricoid = create_cartilage(numberRepresentingCricoid);
-    Arytenoid = create_cartilage(numberRepresentingArytenoid);
-    set_cartilage_colors();
-    osg::PositionAttitudeTransform *cricoidTransform = new osg::PositionAttitudeTransform;
-    osg::PositionAttitudeTransform *thyroidTransform = new osg::PositionAttitudeTransform;
-    osg::PositionAttitudeTransform *arytenoidTransform = new osg::PositionAttitudeTransform;
-    Axis = insert_geom_into_visualization(create_axis(osg::Vec3(-1.368f, 0.f, -3.75f), osg::Vec3(1.368f, 0.f, 3.75f)), osg::Vec4(0.f, 0.7f, 0.7f, 1.f));
-    osg::PositionAttitudeTransform *axisTransform = new osg::PositionAttitudeTransform;
-    axisTransform->addChild(Axis);
-    //axisTransform->setUpdateCallback(new AxisCallback(running));
-    //arytenoidTransform->setUpdateCallback(new ArytenoidUpdateCallback(running));
-    arytenoidTransform->addChild(Arytenoid);
-    thyroidTransform->setUpdateCallback(new ThyroidUpdateCallback(running));
-    thyroidTransform->addChild(Thyroid);
-    cricoidTransform->addChild(Cricoid);
-    cricoidTransform->addChild(thyroidTransform);
-    cricoidTransform->addChild(arytenoidTransform);
-    cricoidTransform->addChild(axisTransform);
-    mRoot->addChild(cricoidTransform);
-    mRoot->addChild(insert_geom_into_visualization(create_wireframe_box(10.f), osg::Vec4(0.f, 0.7f, 0.7f, 1.f)));
-    osg::Quat xRot, zRot;
-    xRot.makeRotate(osg::PI_2, osg::X_AXIS);
-    zRot.makeRotate(osg::DegreesToRadians(-20.0), osg::Z_AXIS);
-    osg::Quat fullRot = xRot * zRot;
-    cricoidTransform->setAttitude(fullRot);
-    cricoidTransform->setPosition(osg::Vec3(2.f, 2.f, -1.f));
+    create_and_add_cartilage_models();
+    create_and_add_axis();
+    orient_cricoid_and_arytenoid_cartilage();
+    orient_thyroid_cartilage();
+    mRoot->addChild(insert_geom_into_visualization(create_wireframe_box(10.f), osg::Vec4(0.f, 0.f, 0.f, 1.f)));
     this->setFocusPolicy(Qt::StrongFocus);
     this->setMinimumSize(100, 100);
     this->setMouseTracking(true);
@@ -67,7 +45,7 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     double timeStep{1.0/framesPerSecond};
     double timerDurationInMilliSeconds{timeStep * 1000};
     mTimerId = startTimer(timerDurationInMilliSeconds);
-    running = true;
+    running = false;
 }
 
 OSGWidget::~OSGWidget()
@@ -80,6 +58,92 @@ void OSGWidget::timerEvent(QTimerEvent *)
     if (running)
     {
         update();
+        if(record)
+        {
+            record_data_for_export();
+            update_counter_progress_bar();
+        }
+    }
+}
+
+void OSGWidget::create_and_add_axis()
+{
+    Axis = insert_geom_into_visualization(create_axis(osg::Vec3(0.f, 4.f, 0.f), osg::Vec3(0.f, -4.f, 0.f)), osg::Vec4(0.f, 0.f, 0.f, 1.f));
+    osg::PositionAttitudeTransform *axisTransform = new osg::PositionAttitudeTransform;
+    axisTransform = new osg::PositionAttitudeTransform;
+    axisTransform->addChild(Axis);
+    axisTransform->setUpdateCallback(new AxisUpdateCallback(running, zLocation, xLocation));
+    mRoot->addChild(axisTransform);
+}
+
+void OSGWidget::create_and_add_cartilage_models()
+{
+    unsigned int numberRepresentingThyroid{1};
+    unsigned int numberRepresentingCricoid{2};
+    unsigned int numberRepresentingArytenoid{3};
+    Thyroid = create_cartilage(numberRepresentingThyroid);
+    Cricoid = create_cartilage(numberRepresentingCricoid);
+    Arytenoid = create_cartilage(numberRepresentingArytenoid);
+    set_cartilage_colors();
+}
+
+void OSGWidget::orient_thyroid_cartilage()
+{
+    osg::PositionAttitudeTransform *thyroidTransform = new osg::PositionAttitudeTransform;
+    thyroidTransform->setUpdateCallback(new ThyroidUpdateCallback(running, zLocation, xLocation));
+    osg::Quat xRot, zRot;
+    xRot.makeRotate(osg::PI_2, osg::X_AXIS);
+    zRot.makeRotate(osg::DegreesToRadians(-20.0), osg::Z_AXIS);
+    fullRot = xRot * zRot;
+    thyroidTransform->addChild(Thyroid);
+    thyroidSphere = create_sphere(0.2f, 1.5f, 4.1f, 1.55f);
+    thyroidTransform->addChild(thyroidSphere);
+    thyroidTransform->setAttitude(fullRot);
+    thyroidTransform->setPosition(osg::Vec3(2.f, 2.f, -1.f));
+    mRoot->addChild(thyroidTransform);
+}
+
+void OSGWidget::orient_cricoid_and_arytenoid_cartilage()
+{
+    osg::PositionAttitudeTransform *cricoidTransform = new osg::PositionAttitudeTransform;
+    osg::PositionAttitudeTransform *arytenoidTransform = new osg::PositionAttitudeTransform;
+    osg::Quat xRot, zRot;
+    xRot.makeRotate(osg::PI_2, osg::X_AXIS);
+    zRot.makeRotate(osg::DegreesToRadians(-20.0), osg::Z_AXIS);
+    fullRot = xRot * zRot;
+    arytenoidTransform->addChild(Arytenoid);
+    cricoidTransform->addChild(Cricoid);
+    arytenoidTransform->addChild(create_sphere(0.2f, -1.5f, 4.3f, 2.5f));
+    arytenoidTransform->setUpdateCallback(new ArytenoidUpdateCallback(running));
+    cricoidTransform->setAttitude(fullRot);
+    cricoidTransform->addChild(arytenoidTransform);
+    mRoot->addChild(cricoidTransform);
+    cricoidTransform->setPosition(osg::Vec3(2.f, 2.f, -1.f));
+}
+
+void OSGWidget::update_counter_progress_bar()
+{
+   window->update_counter(counter);
+}
+
+void OSGWidget::link_window(MainWindow* theWindow)
+{
+    window = theWindow;
+}
+
+void OSGWidget::record_data_for_export()
+{
+    if (counter < 100)
+    {
+        osg::Transform* trans;
+        trans = thyroidSphere->asTransform();
+        osg::PositionAttitudeTransform *pat = trans->asPositionAttitudeTransform();
+        osg::MatrixList mylist = pat->getWorldMatrices();
+        osg::Vec3 locations;
+        osg::Matrixd mat = mylist.front();
+        locations = mat.getTrans();
+        ThyDataVec.push_back(locations);
+        counter++;
     }
 }
 
@@ -102,7 +166,7 @@ osg::Camera* OSGWidget::get_new_camera(const int width, const int height, int pi
     camera->setGraphicsContext(mGraphicsWindow);
     camera->setViewport(0, 0, width * pixelRatio, height * pixelRatio);
     float redColor{0.f};
-    float greenColor{0.f};
+    float greenColor{0.7f};
     float blueColor{0.5f};
     float opaqueValue{1.f};
     camera->setClearColor(osg::Vec4(redColor, greenColor, blueColor, opaqueValue));
@@ -126,6 +190,18 @@ osg::Geometry*  OSGWidget::create_axis(osg::Vec3 point, osg::Vec3 point2)
     axis->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
     axis->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, 2));
     return axis;
+}
+
+void OSGWidget::write_to_file(std::string filename)
+{
+    std::ofstream myFile;
+    myFile.open(filename);
+    for (int i{0}; i < 100; i++)
+    {
+        myFile << ThyDataVec[i];
+        myFile << std::endl;
+    }
+    myFile.close();
 }
 
 osg::Geometry* OSGWidget::create_wireframe_box(float sideLength)
@@ -167,6 +243,23 @@ osg::Node* OSGWidget::insert_geom_into_visualization(osg::Geometry* geom, osg::V
     return transform;
 }
 
+osg::PositionAttitudeTransform* OSGWidget::create_sphere(float radius, float xVal, float yVal, float zVal)
+{
+    osg::Sphere* sphere = new osg::Sphere(osg::Vec3(0,0,0), radius);
+    osg::ShapeDrawable *sd = new osg::ShapeDrawable(sphere);
+    osg::Geode *geode = new osg::Geode;
+    geode->addDrawable(sd);
+    osg::StateSet *stateSet = geode->getOrCreateStateSet();
+    osg::Material *material = new osg::Material;
+    material->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
+    stateSet->setAttributeAndModes(material, osg::StateAttribute::ON);
+    stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+    osg::PositionAttitudeTransform *transform = new osg::PositionAttitudeTransform;
+    transform->setPosition(osg::Vec3(xVal, yVal, zVal));
+    transform->addChild(geode);
+    return transform;
+}
+
 void OSGWidget::initialize_view_and_manipulator(osg::Camera *camera)
 {
     osgViewer::View *newView = new osgViewer::View;
@@ -188,7 +281,6 @@ void OSGWidget::initialize_mviewer(osgViewer::View *newView, osg::ref_ptr<osgGA:
     mViewer->realize();
     mView->home();
 }
-
 
 void OSGWidget::make_cartilage_transparent(osg::ref_ptr<osg::Node> myNode)
 {

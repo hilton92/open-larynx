@@ -32,7 +32,7 @@
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,1">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,1">
     <item>
      <widget class="OSGWidget" name="mOSGWidget" native="true">
       <property name="enabled">
@@ -51,7 +51,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1,1,2,1,1,1,1,1,8,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1,1,2,1,1,1,1,1,0,0,8,0,0">
        <item>
         <spacer name="verticalSpacer_6">
          <property name="orientation">
@@ -85,7 +85,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Toggle Opacity</string>
+          <string>Toggle Visibility</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -172,14 +172,23 @@
         </widget>
        </item>
        <item>
-        <widget class="QSlider" name="horizontalSlider_2">
+        <widget class="QSlider" name="X_direction_slider">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="singleStep">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>1</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QSlider" name="horizontalSlider">
+        <widget class="QSlider" name="Z_direction_slider">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -206,18 +215,25 @@
          <item>
           <widget class="QPushButton" name="Animate">
            <property name="text">
-            <string>Animate</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="Pause">
-           <property name="text">
-            <string>Pause</string>
+            <string>Play/Pause</string>
            </property>
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="Record">
+         <property name="text">
+          <string>Record for Export</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QProgressBar" name="saveProgressBar">
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="verticalSpacer_3">
@@ -278,7 +294,6 @@
     </property>
     <addaction name="actionExit"/>
     <addaction name="actionSaveOptions"/>
-    <addaction name="actionLoadOptions"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>

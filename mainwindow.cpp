@@ -11,8 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mMainWindowUI{new Ui::MainWindowForm}
 {
     mMainWindowUI->setupUi(this);
-   //mOSGWidget = new OSGWidget{this};
-   // this->setCentralWidget(mOSGWidget);
+    QWidget::setWindowIcon(QIcon(":/myicons/myicon.ico"));
+    mMainWindowUI->mOSGWidget->link_window(this);
 }
 
 MainWindow::~MainWindow()
@@ -25,9 +25,11 @@ void MainWindow::on_actionExit_triggered()
     QApplication::quit();
 }
 
+
 void MainWindow::on_actionSaveOptions_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this, "Save Options", "", "txt");
+    mMainWindowUI->mOSGWidget->write_to_file(fileName.toStdString());
 }
 
 void MainWindow::on_toggleThyroid_clicked()
@@ -73,4 +75,35 @@ void MainWindow::on_toggleCricoid_clicked()
         mMainWindowUI->mOSGWidget->cricoidTransparent = false;
 
     }
+}
+
+void MainWindow::on_X_direction_slider_valueChanged(int value)
+{
+    float val = (2.f * value) / 100;
+    mMainWindowUI->mOSGWidget->xLocation = -2.f + val;
+}
+
+void MainWindow::on_Z_direction_slider_valueChanged(int value)
+{
+    float val = (2.f * value) / 100;
+    mMainWindowUI->mOSGWidget->zLocation = val;
+}
+
+void MainWindow::on_Animate_clicked()
+{
+    if (mMainWindowUI->mOSGWidget->running)
+        mMainWindowUI->mOSGWidget->running = false;
+    else mMainWindowUI->mOSGWidget->running = true;
+}
+
+void MainWindow::on_Record_clicked()
+{
+    mMainWindowUI->mOSGWidget->record = true;
+    mMainWindowUI->mOSGWidget->counter = 0;
+    mMainWindowUI->mOSGWidget->ThyDataVec.clear();
+}
+
+void MainWindow::update_counter(int value)
+{
+    mMainWindowUI->saveProgressBar->setValue(value);
 }
