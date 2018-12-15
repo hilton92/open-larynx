@@ -4,6 +4,7 @@
 #include "CricoidUpdateCallback.h"
 #include "AxisUpdateCallback.h"
 #include "OSGLarynx.h"
+#include "mainwindow.h"
 
 #include <osg/Material>
 #include <osgViewer/ViewerEventHandlers>
@@ -94,9 +95,25 @@ void OSGWidget::timerEvent(QTimerEvent *)
         if(record)
         {
             record_data_for_export();
+            update_counter_progress_bar();
+            //mMainWindowUI.set_progress_bar(counter);
+            //QObject::connect(MainWindow, SIGNAL(counter));
+            //Ui::MainWindowForm::mMainWindowUI->saveProgressBar->setValue(counter);
         }
     }
 }
+
+void OSGWidget::update_counter_progress_bar()
+{
+   window->update_counter(counter);
+}
+
+void OSGWidget::link_window(MainWindow* theWindow)
+{
+    window = theWindow;
+}
+
+
 
 void OSGWidget::record_data_for_export()
 {

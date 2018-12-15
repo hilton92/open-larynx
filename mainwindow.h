@@ -19,10 +19,13 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    Ui::MainWindowForm *mMainWindowUI;
+    //OSGWidget *mOSGWidget{nullptr};
+
 public slots:
     void on_actionExit_triggered();
     void on_actionSaveOptions_triggered();
-
+    void update_counter(int);
 
 private slots:
     void on_toggleCricoid_clicked();
@@ -42,8 +45,7 @@ private slots:
     void on_Record_clicked();
 
 private:
-    Ui::MainWindowForm *mMainWindowUI;
-   // OSGWidget *mOSGWidget{nullptr};
+
 };
 
 #endif // MAINWINDOW_H

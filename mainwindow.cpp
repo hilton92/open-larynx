@@ -10,8 +10,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow{parent},
     mMainWindowUI{new Ui::MainWindowForm}
 {
+    //mMainWindowUI->saveProgressBar->setRange(0,100);
+    //mMainWindowUI->saveProgressBar->setValue(0);
     mMainWindowUI->setupUi(this);
     QWidget::setWindowIcon(QIcon(":/myicons/myicon.ico"));
+    mMainWindowUI->mOSGWidget->link_window(this);
 }
 
 MainWindow::~MainWindow()
@@ -24,10 +27,12 @@ void MainWindow::on_actionExit_triggered()
     QApplication::quit();
 }
 
+
 void MainWindow::on_actionSaveOptions_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this, "Save Options", "", "txt");
     mMainWindowUI->mOSGWidget->write_to_file(fileName.toStdString());
+
 
 }
 
@@ -101,3 +106,9 @@ void MainWindow::on_Record_clicked()
     mMainWindowUI->mOSGWidget->counter = 0;
     mMainWindowUI->mOSGWidget->ThyDataVec.clear();
 }
+
+void MainWindow::update_counter(int value)
+{
+    mMainWindowUI->saveProgressBar->setValue(value);
+}
+

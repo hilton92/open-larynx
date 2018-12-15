@@ -32,7 +32,7 @@
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,1">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,1">
     <item>
      <widget class="OSGWidget" name="mOSGWidget" native="true">
       <property name="enabled">
@@ -51,7 +51,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1,1,2,1,1,1,1,1,0,8,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1,1,2,1,1,1,1,1,0,0,8,0,0">
        <item>
         <spacer name="verticalSpacer_6">
          <property name="orientation">
@@ -85,7 +85,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Toggle Opacity</string>
+          <string>Toggle Visibility</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -225,6 +225,13 @@
         <widget class="QPushButton" name="Record">
          <property name="text">
           <string>Record for Export</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QProgressBar" name="saveProgressBar">
+         <property name="value">
+          <number>0</number>
          </property>
         </widget>
        </item>

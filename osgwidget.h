@@ -2,6 +2,7 @@
 #define MEEN_570_OSGWIDGET
 
 #include <QOpenGLWidget>
+#include "mainwindow.h"
 
 #include <osg/ref_ptr>
 #include <osgViewer/GraphicsWindow>
@@ -17,7 +18,7 @@ class OSGWidget : public QOpenGLWidget
   Q_OBJECT
 
 public:
-  OSGWidget( QWidget* parent = nullptr,
+  OSGWidget(QWidget* parent = nullptr,
              Qt::WindowFlags f = nullptr);
 
   virtual ~OSGWidget();
@@ -41,7 +42,8 @@ public:
   void record_data_for_export();
   bool record = false;
   int counter = 0;
-
+  void update_counter_progress_bar();
+  void link_window(MainWindow*);
 
 protected:
   virtual void paint_event( QPaintEvent* paintEvent );
@@ -63,6 +65,7 @@ protected:
   osg::Geometry* create_wireframe_box(float sideLength);
   osg::PositionAttitudeTransform*  create_sphere(float radius, float xVal, float yVal, float zVal);
   osg::Camera* get_new_camera(const int width, const int height, int pixelRatio);
+  MainWindow* window;
 
 
 
