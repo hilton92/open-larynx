@@ -344,17 +344,17 @@ void OSGWidget::keyPressEvent(QKeyEvent* event)
 {
     QString keyString = event->text();
     const char* keyData = keyString.toLocal8Bit().data();
-    if( event->key() == Qt::Key_H )
+    if(event->key() == Qt::Key_H )
     {
         mView->home();
         return;
     }
-    this->get_event_queue()->keyPress( osgGA::GUIEventAdapter::KeySymbol(*keyData));
+    this->get_event_queue()->keyPress(osgGA::GUIEventAdapter::KeySymbol(*keyData));
 }
 
 void OSGWidget::keyReleaseEvent(QKeyEvent* event)
 {
-    QString keyString   = event->text();
+    QString keyString = event->text();
     const char* keyData = keyString.toLocal8Bit().data();
     this->get_event_queue()->keyRelease( osgGA::GUIEventAdapter::KeySymbol(*keyData));
 }
@@ -366,10 +366,10 @@ void OSGWidget::mouseMoveEvent(QMouseEvent* event)
                                         static_cast<float>(event->y() * pixelRatio));
 }
 
-void OSGWidget::mousePressEvent( QMouseEvent* event)
+void OSGWidget::mousePressEvent(QMouseEvent* event)
  {
     unsigned int button{0};
-     switch( event->button() )
+     switch(event->button())
      {
      case Qt::LeftButton:
          button = 1;
@@ -385,8 +385,8 @@ void OSGWidget::mousePressEvent( QMouseEvent* event)
      }
 
      auto pixelRatio = this->devicePixelRatio();
-     this->get_event_queue()->mouseButtonPress( static_cast<float>( event->x() * pixelRatio ),
-                                              static_cast<float>( event->y() * pixelRatio ),
+     this->get_event_queue()->mouseButtonPress(static_cast<float>(event->x() * pixelRatio),
+                                              static_cast<float>(event->y() * pixelRatio),
                                               button );
  }
 
@@ -394,7 +394,7 @@ void OSGWidget::mouseReleaseEvent(QMouseEvent* event)
  {
 
     unsigned int button{0};
-     switch( event->button() )
+     switch(event->button())
      {
      case Qt::LeftButton:
          button = 1;
@@ -409,13 +409,13 @@ void OSGWidget::mouseReleaseEvent(QMouseEvent* event)
          break;
      }
      auto pixelRatio = this->devicePixelRatio();
-     this->get_event_queue()->mouseButtonRelease( static_cast<float>( pixelRatio * event->x() ),
-                                                static_cast<float>( pixelRatio * event->y() ),
+     this->get_event_queue()->mouseButtonRelease( static_cast<float>(pixelRatio * event->x()),
+                                                static_cast<float>(pixelRatio * event->y()),
                                                 button );
  }
 
 
-void OSGWidget::wheelEvent( QWheelEvent* event )
+void OSGWidget::wheelEvent(QWheelEvent* event)
 {
     event->accept();
     int delta = event->delta();
@@ -441,9 +441,9 @@ osgGA::EventQueue* OSGWidget::get_event_queue() const
         throw std::runtime_error("Unable to obtain valid event queue");
 }
 
-bool OSGWidget::event( QEvent* event )
+bool OSGWidget::event(QEvent* event)
 {
-    bool handled = QOpenGLWidget::event( event );
+    bool handled = QOpenGLWidget::event(event);
     repaint_osg_graphics_after_interaction(event);
     return handled;
 }

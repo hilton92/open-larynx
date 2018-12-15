@@ -3,7 +3,6 @@
 #include "osgwidget.h"
 #include <stdlib.h>
 #include <QFileDialog>
-
 #include <QDockWidget>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -25,7 +24,6 @@ void MainWindow::on_actionExit_triggered()
     QApplication::quit();
 }
 
-
 void MainWindow::on_actionSaveOptions_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this, "Save Options", "", "txt");
@@ -43,7 +41,6 @@ void MainWindow::on_toggleThyroid_clicked()
     {
         mMainWindowUI->mOSGWidget->make_cartilage_opaque(mMainWindowUI->mOSGWidget->get_thyroid_pointer());
         mMainWindowUI->mOSGWidget->thyroidTransparent = false;
-
     }
 }
 
@@ -58,7 +55,6 @@ void MainWindow::on_toggleArytenoid_clicked()
     {
         mMainWindowUI->mOSGWidget->make_cartilage_opaque(mMainWindowUI->mOSGWidget->get_arytenoid_pointer());
         mMainWindowUI->mOSGWidget->arytenoidTransparent = false;
-
     }
 }
 
@@ -73,7 +69,6 @@ void MainWindow::on_toggleCricoid_clicked()
     {
         mMainWindowUI->mOSGWidget->make_cartilage_opaque(mMainWindowUI->mOSGWidget->get_cricoid_pointer());
         mMainWindowUI->mOSGWidget->cricoidTransparent = false;
-
     }
 }
 

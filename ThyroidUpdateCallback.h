@@ -37,7 +37,6 @@ public:
             pat->setAttitude(mat7.getRotate());
             pat->setPosition(mat7.getTrans());
             traverse(node, nv);
-
             if(mCount == 50 || mCount == 0)
                 mUp = !mUp;
         }
