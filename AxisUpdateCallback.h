@@ -19,8 +19,8 @@ public:
         if (progRunning)
         {
             osg::PositionAttitudeTransform *pat = dynamic_cast<osg::PositionAttitudeTransform *> (node);
-            osg::Vec3 trans_position(axisXLocation, 0.f, axisZLocation);
-            pat->setPosition(trans_position);
+            osg::Vec3 transPosition(axisXLocation, 0.f, axisZLocation);
+            pat->setPosition(transPosition);
         }
     }
 

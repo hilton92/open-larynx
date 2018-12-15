@@ -294,7 +294,6 @@
     </property>
     <addaction name="actionExit"/>
     <addaction name="actionSaveOptions"/>
-    <addaction name="actionLoadOptions"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>

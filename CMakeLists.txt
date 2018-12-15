@@ -14,6 +14,15 @@ SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTOUIC ON)
 SET(CMAKE_AUTORCC ON)
 
+
+IF (NOT TARGET gtest)
+
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    add_subdirectory(libs/googletest)
+
+ENDIF()
+
+
 SET(MYSOURCE
     main.cpp
     mainwindow.cpp
@@ -31,14 +40,31 @@ SET(MYSOURCE
 
 set(MYRESOURCES icons/icons.qrc)
 
+set(TEST_NAME OpenLarynx_UnitTest)
 
 add_executable(${PROJECT_NAME}
     ${MYSOURCE}
     ${MYRESOURCES}
     )
 
+add_executable(Testing
+    unitTest.cpp
+    OSGLarynx.cpp
+    OSGLarynx.h
+    )
+
 target_link_libraries(${PROJECT_NAME}
     ${OPENSCENEGRAPH_LIBRARIES}	
     Qt5::Widgets
     Qt5::Gui
-)
+    )
+
+
+target_link_libraries(Testing
+    ${OPENSCENEGRAPH_LIBRARIES}
+    Qt5::Widgets
+    Qt5::Gui
+    gtest
+    gtest_main
+    )
+

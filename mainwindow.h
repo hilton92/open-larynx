@@ -18,9 +18,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
     Ui::MainWindowForm *mMainWindowUI;
-    //OSGWidget *mOSGWidget{nullptr};
 
 public slots:
     void on_actionExit_triggered();
@@ -29,22 +27,12 @@ public slots:
 
 private slots:
     void on_toggleCricoid_clicked();
-
-private slots:
     void on_toggleArytenoid_clicked();
-
-private slots:
     void on_toggleThyroid_clicked();
-
     void on_X_direction_slider_valueChanged(int value);
-
     void on_Z_direction_slider_valueChanged(int value);
-
     void on_Animate_clicked();
-
     void on_Record_clicked();
-
-private:
 
 };
 

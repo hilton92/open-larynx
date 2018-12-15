@@ -1,5 +1,5 @@
-#ifndef MEEN_570_OSGWIDGET
-#define MEEN_570_OSGWIDGET
+#ifndef OSGWIDGET_H_
+#define OSGWIDGET_H_
 
 #include <QOpenGLWidget>
 #include "mainwindow.h"
@@ -84,6 +84,10 @@ private:
   osg::ref_ptr<osg::Node> Axis;
   osg::ref_ptr<osg::Node> thyroidSphere;
   osg::ref_ptr<osg::Node> ArySphere;
+  void create_and_add_cartilage_models();
+  void orient_cricoid_and_arytenoid_cartilage();
+  void orient_thyroid_cartilage();
+  void create_and_add_axis();
 
 };
 

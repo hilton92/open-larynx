@@ -1,4 +1,3 @@
-
 // Author: Benjamin Hilton
 // Date: November 2018
 

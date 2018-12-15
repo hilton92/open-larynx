@@ -33,7 +33,6 @@ public:
             osg::Matrixd mat3 = osg::Matrixd::translate(osg::Vec3(-axisXLocation, 0.f, -axisZLocation));
             osg::Matrixd mat4 = osg::Matrixd::rotate(0.01 * mCount, osg::Vec3(0.f, 1.f, 0.f));
             osg::Matrixd mat5 = osg::Matrixd::translate(osg::Vec3(axisXLocation, 0.f, axisZLocation));
-
             osg::Matrix mat7 = mat1 * mat2 * mat3 * mat4 * mat5;
             pat->setAttitude(mat7.getRotate());
             pat->setPosition(mat7.getTrans());
