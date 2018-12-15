@@ -37,6 +37,10 @@ private slots:
 
     void on_Z_direction_slider_valueChanged(int value);
 
+    void on_Animate_clicked();
+
+    void on_Record_clicked();
+
 private:
     Ui::MainWindowForm *mMainWindowUI;
    // OSGWidget *mOSGWidget{nullptr};

@@ -17,6 +17,7 @@
 #include <QWheelEvent>
 #include <QPainter>
 #include <fstream>
+#include <osg/io_utils>
 
 
 OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
@@ -41,7 +42,7 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     osg::PositionAttitudeTransform *cricoidTransform = new osg::PositionAttitudeTransform;
     osg::PositionAttitudeTransform *thyroidTransform = new osg::PositionAttitudeTransform;
     osg::PositionAttitudeTransform *arytenoidTransform = new osg::PositionAttitudeTransform;
-    Axis = insert_geom_into_visualization(create_axis(osg::Vec3(0.f, 4.f, 0.f), osg::Vec3(0.f, -4.f, 0.f)), osg::Vec4(0.f, 0.7f, 0.7f, 1.f));
+    Axis = insert_geom_into_visualization(create_axis(osg::Vec3(0.f, 4.f, 0.f), osg::Vec3(0.f, -4.f, 0.f)), osg::Vec4(0.f, 0.f, 0.f, 1.f));
     osg::PositionAttitudeTransform *axisTransform = new osg::PositionAttitudeTransform;
     axisTransform = new osg::PositionAttitudeTransform;
     axisTransform->addChild(Axis);
@@ -50,21 +51,24 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     arytenoidTransform->addChild(Arytenoid);
     arytenoidTransform->addChild(create_sphere(0.2f, -1.5f, 4.3f, 2.5f));
     thyroidTransform->setUpdateCallback(new ThyroidUpdateCallback(running, zLocation, xLocation));
-    thyroidTransform->addChild(Thyroid);
-    thyroidTransform->addChild(create_sphere(0.2f, 1.5f, 4.1f, 1.55f));
+    osg::Quat xRot, zRot;
+    xRot.makeRotate(osg::PI_2, osg::X_AXIS);
+    zRot.makeRotate(osg::DegreesToRadians(-20.0), osg::Z_AXIS);
+    fullRot = xRot * zRot;
+    cricoidTransform->setAttitude(fullRot);thyroidTransform->addChild(Thyroid);
+    thyroidSphere = create_sphere(0.2f, 1.5f, 4.1f, 1.55f);
+    thyroidTransform->addChild(thyroidSphere);
+    thyroidTransform->setAttitude(fullRot);
+    thyroidTransform->setPosition(osg::Vec3(2.f, 2.f, -1.f));
     cricoidTransform->addChild(Cricoid);
     //cricoidTransform->addChild(thyroidTransform);
     mRoot->addChild(thyroidTransform);
     cricoidTransform->addChild(arytenoidTransform);
     //cricoidTransform->addChild(axisTransform);
     mRoot->addChild(cricoidTransform);
-    mRoot->addChild(insert_geom_into_visualization(create_wireframe_box(10.f), osg::Vec4(0.f, 0.7f, 0.7f, 1.f)));
+    mRoot->addChild(insert_geom_into_visualization(create_wireframe_box(10.f), osg::Vec4(0.f, 0.f, 0.f, 1.f)));
     mRoot->addChild(axisTransform);
-    osg::Quat xRot, zRot;
-    xRot.makeRotate(osg::PI_2, osg::X_AXIS);
-    zRot.makeRotate(osg::DegreesToRadians(-20.0), osg::Z_AXIS);
-    fullRot = xRot * zRot;
-    cricoidTransform->setAttitude(fullRot);
+
     cricoidTransform->setPosition(osg::Vec3(2.f, 2.f, -1.f));
     this->setFocusPolicy(Qt::StrongFocus);
     this->setMinimumSize(100, 100);
@@ -74,7 +78,7 @@ OSGWidget::OSGWidget(QWidget *parent, Qt::WindowFlags flags):
     double timeStep{1.0/framesPerSecond};
     double timerDurationInMilliSeconds{timeStep * 1000};
     mTimerId = startTimer(timerDurationInMilliSeconds);
-    running = true;
+    running = false;
 }
 
 OSGWidget::~OSGWidget()
@@ -87,6 +91,26 @@ void OSGWidget::timerEvent(QTimerEvent *)
     if (running)
     {
         update();
+        if(record)
+        {
+            record_data_for_export();
+        }
+    }
+}
+
+void OSGWidget::record_data_for_export()
+{
+    if (counter < 100)
+    {
+        osg::Transform* trans;
+        trans = thyroidSphere->asTransform();
+        osg::PositionAttitudeTransform *pat = trans->asPositionAttitudeTransform();
+        osg::MatrixList mylist = pat->getWorldMatrices();
+        osg::Vec3 locations;
+        osg::Matrixd mat = mylist.front();
+        locations = mat.getTrans();
+        ThyDataVec.push_back(locations);
+        counter++;
     }
 }
 
@@ -109,7 +133,7 @@ osg::Camera* OSGWidget::get_new_camera(const int width, const int height, int pi
     camera->setGraphicsContext(mGraphicsWindow);
     camera->setViewport(0, 0, width * pixelRatio, height * pixelRatio);
     float redColor{0.f};
-    float greenColor{0.f};
+    float greenColor{0.7f};
     float blueColor{0.5f};
     float opaqueValue{1.f};
     camera->setClearColor(osg::Vec4(redColor, greenColor, blueColor, opaqueValue));
@@ -139,9 +163,12 @@ void OSGWidget::write_to_file(std::string filename)
 {
     std::ofstream myfile;
     myfile.open(filename);
-    myfile << "This is a test of the emergency broadcast system";
+    for (int i{0}; i < 100; i++)
+    {
+        myfile << ThyDataVec[i];
+        myfile << std::endl;
+    }
     myfile.close();
-
 }
 
 osg::Geometry* OSGWidget::create_wireframe_box(float sideLength)

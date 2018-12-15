@@ -36,6 +36,11 @@ public:
   bool arytenoidTransparent = false;
   osg::Vec3 transVector = osg::Vec3(2.f, 2.f, -1.f);
   osg::Quat fullRot;
+  std::vector<osg::Vec3> ThyDataVec;
+  std::vector<osg::Vec3> AryDataVec;
+  void record_data_for_export();
+  bool record = false;
+  int counter = 0;
 
 
 protected:
@@ -74,6 +79,8 @@ private:
   osg::ref_ptr<osg::Node> Cricoid;
   osg::ref_ptr<osg::Node> Arytenoid;
   osg::ref_ptr<osg::Node> Axis;
+  osg::ref_ptr<osg::Node> thyroidSphere;
+  osg::ref_ptr<osg::Node> ArySphere;
 
 };
 

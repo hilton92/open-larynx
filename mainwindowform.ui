@@ -51,7 +51,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1,1,2,1,1,1,1,1,8,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1,1,2,1,1,1,1,1,0,8,0,0">
        <item>
         <spacer name="verticalSpacer_6">
          <property name="orientation">
@@ -215,18 +215,18 @@
          <item>
           <widget class="QPushButton" name="Animate">
            <property name="text">
-            <string>Animate</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="Pause">
-           <property name="text">
-            <string>Pause</string>
+            <string>Play/Pause</string>
            </property>
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="Record">
+         <property name="text">
+          <string>Record for Export</string>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="verticalSpacer_3">

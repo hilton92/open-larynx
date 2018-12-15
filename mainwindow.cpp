@@ -11,8 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mMainWindowUI{new Ui::MainWindowForm}
 {
     mMainWindowUI->setupUi(this);
-   //mOSGWidget = new OSGWidget{this};
-   // this->setCentralWidget(mOSGWidget);
+    QWidget::setWindowIcon(QIcon(":/myicons/myicon.ico"));
 }
 
 MainWindow::~MainWindow()
@@ -87,4 +86,18 @@ void MainWindow::on_Z_direction_slider_valueChanged(int value)
 {
     float val = (2.f * value) / 100;
     mMainWindowUI->mOSGWidget->zLocation = val;
+}
+
+void MainWindow::on_Animate_clicked()
+{
+    if (mMainWindowUI->mOSGWidget->running)
+        mMainWindowUI->mOSGWidget->running = false;
+    else mMainWindowUI->mOSGWidget->running = true;
+}
+
+void MainWindow::on_Record_clicked()
+{
+    mMainWindowUI->mOSGWidget->record = true;
+    mMainWindowUI->mOSGWidget->counter = 0;
+    mMainWindowUI->mOSGWidget->ThyDataVec.clear();
 }

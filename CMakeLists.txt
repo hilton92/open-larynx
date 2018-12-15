@@ -29,9 +29,12 @@ SET(MYSOURCE
     AxisUpdateCallback.h
     )
 
+set(MYRESOURCES icons/icons.qrc)
+
 
 add_executable(${PROJECT_NAME}
     ${MYSOURCE}
+    ${MYRESOURCES}
     )
 
 target_link_libraries(${PROJECT_NAME}
